@@ -12,7 +12,7 @@ import { makeLanguageTransformer } from './transformer.js';
 import { entries } from '../util/data-extraction.js';
 import { tryParseJson } from '../util/parsing.js';
 import { merge } from 'lodash-es';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 export const XCStringsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.XCSTRINGS,

@@ -5,12 +5,12 @@ import type { Locale, Plurality } from './locales/index.js';
  * containing translations for multiple locales,
  * along with optional metadata such as tags and description.
  */
-export type TranslationEntry<TPlural extends true | false = boolean> = {
+export interface TranslationEntry {
   translations: TranslationLocalizedEntries;
   tags?: string[];
   description?: string;
-} & (TPlural extends true ? { plurals: TranslationPluralization }
-: { plurals?: undefined });
+  plurals?: TranslationPluralization;
+}
 
 /**
  * Pluralization entries for different quantities,
@@ -28,16 +28,13 @@ export type TranslationPluralization = Partial<
 
 export type TranslationLocalizedEntries = Partial<Record<Locale, string>>;
 
-export type TranslationKey<T extends string> = T;
+export type TranslationKey = string & {};
 
 /**
  * A dataset of translation entries,
  * where each key is a unique identifier for a translation entry.
  */
-export type TranslationDataset<TKey extends string = string> = Record<
-  TranslationKey<TKey>,
-  TranslationEntry
->;
+export type TranslationDataset = Record<TranslationKey, TranslationEntry>;
 
 /**
  * Extensible options for parsing functions

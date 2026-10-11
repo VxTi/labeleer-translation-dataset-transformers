@@ -20,7 +20,7 @@ import { entries, extractArray } from '../util/data-extraction.js';
 import { XMLParser } from 'fast-xml-parser';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { merge } from 'lodash-es';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.ANDROID_STRINGS,

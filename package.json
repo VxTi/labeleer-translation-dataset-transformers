@@ -11,6 +11,7 @@
     }
   },
   "private": false,
+  "sideEffects": false,
   "type": "module",
   "description": "Utility parser methods used by all Labeleer tools",
   "author": "Luca Warmenhoven",

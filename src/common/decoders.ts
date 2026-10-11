@@ -6,7 +6,7 @@ import {
   iso639_1ToLocale,
   toPOSIX,
 } from '../locales/index.js';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 import {
   MAX_TAG_COUNT,
   MAX_TAG_LENGTH,

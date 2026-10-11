@@ -18,7 +18,7 @@ import { makeLanguageTransformer } from './transformer.js';
 import { entries, extractArray } from '../util/data-extraction.js';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { XMLParser } from 'fast-xml-parser';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 export const TsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.TS,
