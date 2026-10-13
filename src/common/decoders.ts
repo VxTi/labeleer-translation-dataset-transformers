@@ -45,12 +45,12 @@ export const JsonTranslationDatasetDecoder: z.ZodType<TranslationDataset> =
       // `plurals`/`translations` default to empty so hand-authored JSON/YAML may
       // omit them while parsed entries still satisfy the TranslationEntry shape.
       // `partialRecord` keeps plural categories optional (not all-or-nothing).
-      plurals: z
-        .partialRecord(
+      plurals: z.optional(
+        z.partialRecord(
           LocaleDecoder,
           z.partialRecord(z.enum(Plurality), z.string())
         )
-        .default({}),
+      ),
       translations: z.partialRecord(LocaleDecoder, z.string()).default({}),
       description: z.optional(
         z
