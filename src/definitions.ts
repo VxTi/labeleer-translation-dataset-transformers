@@ -1,5 +1,9 @@
 import type { Locale, Plurality } from './locales/index.js';
 
+export type TranslationKey = string & {};
+
+export type TranslationValue = string & {};
+
 /**
  * An entry in a translation dataset,
  * containing translations for multiple locales,
@@ -12,6 +16,10 @@ export interface TranslationEntry {
   plurals?: TranslationPluralization;
 }
 
+export type TranslationLocalizedEntries = Partial<
+  Record<Locale, TranslationValue>
+>;
+
 /**
  * Pluralization entries for different quantities,
  * each containing localized translations.
@@ -23,12 +31,8 @@ export interface TranslationEntry {
  * }
  */
 export type TranslationPluralization = Partial<
-  Record<Locale, Partial<Record<Plurality, string>>>
+  Record<Locale, Partial<Record<Plurality, TranslationValue>>>
 >;
-
-export type TranslationLocalizedEntries = Partial<Record<Locale, string>>;
-
-export type TranslationKey = string & {};
 
 /**
  * A dataset of translation entries,
@@ -66,6 +70,8 @@ export interface SerializationOptions {
 
   /**
    * The list of locales to include in the serialization output.
+   * This can be a list smaller than the locales contained in the dataset, so that
+   * you can selectively include only a subset of the available locales.
    */
   locales: Locale[];
 }

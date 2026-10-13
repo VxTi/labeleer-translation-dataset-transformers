@@ -6,6 +6,7 @@ import {
   type InferBCP47Locale,
   type InferPosixFromBCP47Locale,
   type CountryCode,
+  LocalesSet,
 } from './locales.js';
 
 /**
@@ -138,5 +139,5 @@ export function getCountryFromLocale(locale: Locale): CountryCode | null {
 export function isLocale(value: string | undefined): value is Locale {
   if (!value) return false;
 
-  return Locales.includes(value as Locale);
+  return LocalesSet.has(value as Locale);
 }

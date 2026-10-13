@@ -182,7 +182,7 @@ export const LocalesSet = new Set(Locales);
 /**
  * @see [POSIX Locale](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap07.html)
  */
-export type Locale = (typeof Locales)[number];
+export type Locale = (typeof Locales)[number] & {};
 
 export type InferBCP47Locale<T extends string> =
   T extends `${infer Lang}_${infer Region}` ? `${Lang}-${Region}` : never;
@@ -199,7 +199,7 @@ export type InferISO639_1RegionCode<T extends string> =
 /**
  * @see [MDN - BCP 47](https://developer.mozilla.org/en-US/docs/Glossary/BCP_47_language_tag)
  */
-export type BCP47Locale = InferBCP47Locale<Locale>;
+export type BCP47Locale = InferBCP47Locale<Locale> & {};
 
 /**
  * @see [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1)
