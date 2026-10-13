@@ -51,7 +51,9 @@ export const JsonTranslationDatasetDecoder: z.ZodType<TranslationDataset> =
           z.partialRecord(z.enum(Plurality), z.string())
         )
       ),
-      translations: z.partialRecord(LocaleDecoder, z.string()).default({}),
+      translations: z
+        .optional(z.partialRecord(LocaleDecoder, z.string()))
+        .default({}),
       description: z.optional(
         z
           .string()
