@@ -14,21 +14,36 @@
  * `export * from` statements to the barrels and rewrites the specifiers that
  * lack a `.js` extension, instead of failing.
  */
-import chalk                                from 'chalk';
-import { existsSync, readdirSync }          from 'node:fs';
+import chalk from 'chalk';
+import { isNil } from 'lodash-es';
+import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
-import { fileURLToPath }                    from 'node:url';
-import ts                                   from 'typescript';
+import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
+import ts from 'typescript';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Directory that is walked, relative to the project root. */
 const sourceRoot = 'src';
 
-const useEsm = true; // Whether to add extensions to exports
-
-/** Whether missing exports are written to the barrels instead of reported. */
-const shouldFix = process.argv.slice(2).includes('--fix');
+const {
+  values: { fix: shouldFix, esm: useEsm },
+} = parseArgs({
+  args: process.argv.slice(2),
+  options: {
+    // Whether missing exports are written to the barrels instead of reported.
+    fix: {
+      type: 'boolean',
+      default: false,
+    },
+    // Whether to add extensions to exports
+    esm: {
+      type: 'boolean',
+      default: true,
+    },
+  },
+});
 
 /**
  * Glob patterns of files and directories that are not expected to be exported.
@@ -91,7 +106,10 @@ interface ExtensionProblem {
 /** The project's compiler options, so module resolution honours `paths`. */
 const compilerOptions = ((): ts.CompilerOptions => {
   const tsconfigPath = join(projectRoot, 'tsconfig.json');
-  const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { config } = ts.readConfigFile(tsconfigPath, input =>
+    ts.sys.readFile(input)
+  );
 
   return ts.parseJsonConfigFileContent(config, ts.sys, projectRoot).options;
 })();
@@ -201,7 +219,7 @@ function collectReexports(barrelPath: string): Reexport[] {
         // `export * from` and `export * as ns from` re-export everything;
         // an `export { a, b } from` clause only covers what it names.
         isWildcard:
-          statement.exportClause === undefined ||
+          isNil(statement.exportClause) ||
           ts.isNamespaceExport(statement.exportClause),
       },
     ];
@@ -217,8 +235,7 @@ function specifierFor(target: string, directory: string): string {
   const targetDirectory = dirname(target);
   const name = basenameWithoutExtension(target);
 
-  if (targetDirectory === directory)
-    return `./${name}${useEsm ? '.js' : ''}`;
+  if (targetDirectory === directory) return `./${name}${useEsm ? '.js' : ''}`;
 
   const directoryName = basenameWithoutExtension(targetDirectory);
 
@@ -253,9 +270,15 @@ function esmSpecifierOf({
   return `${base}${isDirectory ? '/index' : ''}.js`;
 }
 
-const success = (message: string) => console.log(chalk.green(message));
-const error = (message: string): void => console.log(chalk.red(message));
-const warn = (message: string): void => console.log(chalk.yellow(message));
+const success = (message: string) => {
+  console.log(chalk.green(message));
+};
+const error = (message: string): void => {
+  console.log(chalk.red(message));
+};
+const warn = (message: string): void => {
+  console.log(chalk.yellow(message));
+};
 
 const problems: Problem[] = [];
 const partialExports: Problem[] = [];
@@ -302,12 +325,12 @@ function checkDirectory(directory: string): void {
       // A named re-export covers the module, but silently drops any member
       // added to it later, so it is reported separately as a warning.
       (matches.length > 0 ? partialExports : problems).push(problem);
-    })
+    });
 
-    if (useEsm)
+    if (useEsm) {
       reexports.forEach(reexport => {
         const expectedSpecifier = esmSpecifierOf(reexport);
-        if (expectedSpecifier === undefined) return;
+        if (isNil(expectedSpecifier)) return;
 
         extensionProblems.push({
           barrel: toRelativePath(barrelPath),
@@ -316,6 +339,7 @@ function checkDirectory(directory: string): void {
           range: reexport.range,
         });
       });
+    }
   } else if (directory !== join(projectRoot, sourceRoot) && files.length > 0) {
     unbarrelledDirectories.push(toRelativePath(directory));
   }
@@ -336,7 +360,8 @@ function addExports(barrel: string, specifiers: string[]): void {
   const original = ts.sys.readFile(barrelPath) ?? '';
   const statements = specifiers
     .map(specifier => `export * from '${specifier}';`)
-    .join('\n').concat('\n')
+    .join('\n')
+    .concat('\n');
 
   const source = ts.createSourceFile(
     barrelPath,
@@ -382,17 +407,23 @@ function fixSpecifiers(barrel: string, items: ExtensionProblem[]): void {
 
       return `${text.slice(0, range.start)}${quote}${expected}${quote}${text.slice(range.end)}`;
     }, original);
-
   ts.sys.writeFile(barrelPath, fixed);
 }
 
 function groupByBarrel<T extends { barrel: string }>(
   items: T[]
 ): Map<string, T[]> {
-  return items.reduce<Map<string, T[]>>((grouped, item) => {
-    grouped.set(item.barrel, [...(grouped.get(item.barrel) ?? []), item]);
-    return grouped;
-  }, new Map());
+  const group = new Map<string, T[]>();
+  items.forEach(item => {
+    const existing = group.get(item.barrel);
+    if (existing) {
+      existing.push(item);
+    } else {
+      group.set(item.barrel, [item]);
+    }
+  });
+
+  return group;
 }
 
 checkDirectory(join(projectRoot, sourceRoot));
@@ -403,8 +434,9 @@ for (const [barrel, items] of groupByBarrel(partialExports)) {
     warn(`    ${target} — consider \`export * from '${specifier}';\``);
 }
 
-for (const directory of unbarrelledDirectories)
+for (const directory of unbarrelledDirectories) {
   warn(`⚠ ${directory} has no index.ts, so it is not part of the API`);
+}
 
 if (problems.length === 0 && extensionProblems.length === 0) {
   success(

@@ -3,7 +3,7 @@ import importPlugin from 'eslint-plugin-import';
 import prettierPlugin from 'eslint-plugin-prettier';
 import unusedImports from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
-import prettierConfig from './prettier.config';
+import prettierConfig from './prettier.config.js';
 
 export default defineConfig([
   // TypeScript recommendations
@@ -70,8 +70,8 @@ export default defineConfig([
         'ignorePackages',
         {
           js: 'always',
-          ts: 'always'
-        }
+          ts: 'always',
+        },
       ],
 
       '@typescript-eslint/consistent-type-imports': [

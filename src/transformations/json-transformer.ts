@@ -1,3 +1,5 @@
+import { ellipsize } from '../util/formatting.js';
+import { tryParseJson } from '../util/parsing.js';
 import { JsonTranslationDatasetDecoder } from '../common/index.js';
 import type {
   ParsingOptions,
@@ -13,7 +15,7 @@ export const JsonDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.JSON,
   extensions: ['.json'],
   parse(input: string, _options: ParsingOptions): TranslationDataset {
-    const json = safeParseJson(input);
+    const json = tryParseJson(input);
     if (!json) {
       throw new ParsingError(
         'Invalid JSON format. Please ensure the input is valid JSON.'
@@ -23,9 +25,9 @@ export const JsonDatasetTransformer = makeLanguageTransformer({
     const result = JsonTranslationDatasetDecoder.safeParse(json);
 
     if (!result.success) {
-      throw new ParsingError('JSON structure is invalid.', {
-        cause: result.error,
-      });
+      throw new ParsingError(
+        `JSON structure is invalid: ${result.error.issues.map(i => `key ${ellipsize(i.path.join('.'), 16)}: ${i.message}`).join(', ')}`
+      );
     }
     return result.data;
   },
@@ -43,12 +45,3 @@ export const JsonDatasetTransformer = makeLanguageTransformer({
 });
 
 export const DEFAULT_JSON_FILE_NAME = 'labels';
-
-function safeParseJson(input: string): object | undefined {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return JSON.parse(input);
-  } catch {
-    return undefined;
-  }
-}
