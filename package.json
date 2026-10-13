@@ -24,7 +24,7 @@
     "check:imports": "tsx ./bin/check-exports.ts",
     "fix:imports": "tsx ./bin/check-exports.ts --fix",
     "build": "tsc --p tsconfig.release.json && tsc-alias -p tsconfig.release.json",
-    "prepublishOnly": "pnpm run clean; pnpm run lint && pnpm run check:imports && pnpm run test && pnpm run build;",
+    "prepublishOnly": "pnpm run clean; pnpm run lint && pnpm run check:imports && pnpm run test && pnpm run build && node bin/test-build-import.js",
     "test": "vitest run -u",
     "test:ci": "vitest run",
     "lint": "eslint --fix \"./src/**/*.ts\" --cache --max-warnings 0",
