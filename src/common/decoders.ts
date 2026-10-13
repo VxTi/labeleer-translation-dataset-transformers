@@ -31,55 +31,48 @@ export const LocaleDecoder = z
 
 export const TranslationKeyDecoder = z
   .string()
-  .refine(input => input.length > MIN_TRANSLATION_KEY_LENGTH, {
+  .min(MIN_TRANSLATION_KEY_LENGTH, {
     error: `Translation label must be at least ${MIN_TRANSLATION_KEY_LENGTH} characters long`,
   })
-  .refine(input => input.length < MAX_TRANSLATION_KEY_LENGTH, {
+  .max(MAX_TRANSLATION_KEY_LENGTH, {
     error: `Translation label must be less than ${MAX_TRANSLATION_KEY_LENGTH} characters long`,
   });
 
-export const JsonTranslationDatasetDecoder: z.ZodType<TranslationDataset> =
-  z.record(
-    TranslationKeyDecoder,
-    z.object({
-      // `plurals`/`translations` default to empty so hand-authored JSON/YAML may
-      // omit them while parsed entries still satisfy the TranslationEntry shape.
-      // `partialRecord` keeps plural categories optional (not all-or-nothing).
-      plurals: z.optional(
-        z.partialRecord(
-          LocaleDecoder,
-          z.partialRecord(z.enum(Plurality), z.string())
+export const JsonTranslationDatasetDecoder = z.record(
+  TranslationKeyDecoder,
+  z.object({
+    // `plurals`/`translations` default to empty so hand-authored JSON/YAML may
+    // omit them while parsed entries still satisfy the TranslationEntry shape.
+    // `partialRecord` keeps plural categories optional (not all-or-nothing).
+    plurals: z.optional(
+      z.partialRecord(
+        LocaleDecoder,
+        z.partialRecord(z.enum(Plurality), z.string())
+      )
+    ),
+    translations: z
+      .optional(z.partialRecord(LocaleDecoder, z.string()))
+      .default({}),
+    description: z.optional(
+      z.string().max(MAX_TRANSLATION_DESCRIPTION_LENGTH, {
+        error: `Translation description must be less than ${MAX_TRANSLATION_DESCRIPTION_LENGTH} characters long`,
+      })
+    ),
+    tags: z.optional(
+      z
+        .array(
+          z
+            .string()
+            .min(MIN_TAG_LENGTH, {
+              error: 'Tag cannot be empty',
+            })
+            .max(MAX_TAG_LENGTH, {
+              error: `Tags can at most be ${MAX_TAG_LENGTH} characters long`,
+            })
         )
-      ),
-      translations: z
-        .optional(z.partialRecord(LocaleDecoder, z.string()))
-        .default({}),
-      description: z.optional(
-        z
-          .string()
-          .refine(
-            description =>
-              description.length < MAX_TRANSLATION_DESCRIPTION_LENGTH,
-            {
-              error: `Translation description must be less than ${MAX_TRANSLATION_DESCRIPTION_LENGTH} characters long`,
-            }
-          )
-      ),
-      tags: z.optional(
-        z
-          .array(
-            z
-              .string()
-              .refine(tag => tag.length > MIN_TAG_LENGTH, {
-                error: 'Tag cannot be empty',
-              })
-              .refine(tag => tag.length < MAX_TAG_LENGTH, {
-                error: `Tags can at most be ${MAX_TAG_LENGTH} characters long`,
-              })
-          )
-          .refine(tags => tags.length < MAX_TAG_COUNT, {
-            error: `There can at most be ${MAX_TAG_COUNT} tags per translation`,
-          })
-      ),
-    })
-  );
+        .max(MAX_TAG_COUNT, {
+          error: `There can at most be ${MAX_TAG_COUNT} tags per translation`,
+        })
+    ),
+  })
+) satisfies z.ZodType<TranslationDataset>;
