@@ -153,6 +153,9 @@ type InferParsingOptions<T> =
 export interface ParserSet<TTransformers extends SomeLanguageFileTransformer> {
   formats(): InferLanguageFileFormat<NoInfer<TTransformers>>[];
 
+  singleOutputFormats: FileFormat[];
+  multipleOutputFormats: FileFormat[];
+
   getByExtension<TExt extends InferExtensions<TTransformers>>(
     extension: TExt
   ): InferParserWithExtension<TExt, TTransformers>;
@@ -251,6 +254,12 @@ export function makeParserSet<
   };
 
   return {
+    multipleOutputFormats: transformers
+      .filter(t => !t.isSingleFileOutput)
+      .map(t => t.fileFormat),
+    singleOutputFormats: transformers
+      .filter(t => t.isSingleFileOutput)
+      .map(t => t.fileFormat),
     getSupportedExtensions,
     getByExtension,
     getByFormat,

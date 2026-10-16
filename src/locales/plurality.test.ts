@@ -7,9 +7,9 @@ import {
 } from './plurality.js';
 import { type Locale, Locales } from './locales.js';
 
-describe('supportsPluralization', () => {
+describe('hasPluralization', () => {
   it.each<[Locale, boolean]>([
-    ...[...nonPluralLocales].map<[Locale, boolean]>(locale => [locale, false]),
+    ...nonPluralLocales.map<[Locale, boolean]>(locale => [locale, false]),
     ['en_US', true],
     ['nl_NL', true],
   ])(

@@ -190,6 +190,8 @@ export const XCStringsTranslationEntryDecoder = z.object({
   comment: z.string(),
   extractionState: z.enum(['manual']),
   localizations: z.record(
+    // Intentionally don't use `LocaleParser`, as we can't index
+    // into `localizations` with BCP47 locales, only Locale types
     z.string(/* Locale */).refine(val => {
       return LocaleDecoder.safeParse(val).success;
     }),
