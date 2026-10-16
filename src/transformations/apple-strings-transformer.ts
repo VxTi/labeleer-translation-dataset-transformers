@@ -1,3 +1,4 @@
+import { hasArrayLengthAtLeast } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
@@ -19,7 +20,7 @@ export interface AppleStringsSerializationOptions extends SerializationOptions {
 export const AppleStringsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.APPLE_STRINGS,
   extensions: ['.strings'],
-
+  isSingleFileOutput: false,
   parse(input: string, options: ParsingOptions): TranslationDataset {
     const { targetLocale } = options;
     if (!targetLocale) {
@@ -34,7 +35,7 @@ export const AppleStringsDatasetTransformer = makeLanguageTransformer({
     for (const line of lines) {
       const match = line.match(APPLE_STRING_LINE_REGEX);
 
-      if (!match) continue;
+      if (!match || !hasArrayLengthAtLeast(match, 3)) continue;
 
       const [, key, value] = match;
 

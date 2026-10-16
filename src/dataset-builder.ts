@@ -23,7 +23,7 @@ export class DatasetBuilder {
     translations: Partial<TranslationLocalizedEntries>
   ): this {
     this.ensureExistence(key);
-
+    this.dataset[key] ??= { translations: {} };
     _merge(this.dataset[key].translations, translations);
 
     return this;
@@ -51,6 +51,7 @@ export class DatasetBuilder {
 
     this.ensureExistence(key);
 
+    this.dataset[key] ??= { translations: {} };
     _merge(this.dataset[key].plurals, pluralForms);
     return this;
   }
@@ -66,6 +67,7 @@ export class DatasetBuilder {
 
     this.ensureExistence(key);
 
+    this.dataset[key] ??= { translations: {} };
     this.dataset[key].description = description;
     return this;
   }
@@ -77,6 +79,7 @@ export class DatasetBuilder {
     if (!tags?.length) return this;
 
     this.ensureExistence(key);
+    this.dataset[key] ??= { translations: {} };
     this.dataset[key].tags = tags;
     return this;
   }

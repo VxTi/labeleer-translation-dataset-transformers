@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   MAX_TRANSLATION_KEY_LENGTH,
@@ -120,7 +121,7 @@ describe('json serialization', () => {
     const fileName = `${DEFAULT_JSON_FILE_NAME}.json`;
 
     expect(serialized).toBeDefined();
-    expect(serialized).toHaveProperty(fileName);
+    expect.assert(isNotNil(serialized[fileName]));
     expect(serialized[fileName].content).toContain('hello');
     expect(serialized[fileName].content).toContain('again');
     expect(serialized[fileName].content).toMatchInlineSnapshot(`

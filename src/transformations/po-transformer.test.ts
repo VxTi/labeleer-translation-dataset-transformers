@@ -1,9 +1,9 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   mockParsingOptions,
   mockSerializationOptions,
 } from '../__testutils__/index.js';
-import { type SerializationResult } from '../definitions.js';
 import { Plurality } from '../locales/index.js';
 import { PODatasetTransformer } from './po-transformer.js';
 
@@ -79,11 +79,9 @@ describe('po serialization', () => {
       })
     );
 
-    expect(serialized).toBeDefined();
-    expect(serialized).toMatchObject<SerializationResult>({
-      ['en_US.po']: expect.objectContaining({ content: expect.any(String) }),
-    });
-    expect(serialized['en_US.po'].content).toMatchInlineSnapshot(`
+    const fileName = 'en_US.po';
+    expect.assert(isNotNil(serialized[fileName]));
+    expect(serialized[fileName].content).toMatchInlineSnapshot(`
       "msgid ""
       msgstr ""
       "Content-Type: text/plain; charset=utf-8\\n"

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { entries, type NonEmptyArray } from '@vxti/typed';
 import type {
   MakeOptional,
   ParsingOptions,
@@ -11,22 +12,28 @@ import type { Locale } from '../locales/index.js';
 import { merge } from 'lodash-es';
 
 export type FileExtension<T extends string = string> = `.${T}`;
-type FileExtensions = [FileExtension, ...FileExtension[]];
 
 export interface LanguageFileTransformer<
   TFormat extends FileFormat,
-  TFileExtensions extends FileExtensions,
+  TFileExtensions extends NonEmptyArray<FileExtension>,
   TParseOptions extends ParsingOptions,
   TSerializeOptions extends SerializationOptions = SerializationOptions,
 > {
   readonly fileFormat: TFormat;
   readonly extensions: TFileExtensions;
 
+  defaultExtension: TFileExtensions[0];
+
   canParse(extension: string): extension is NoInfer<TFileExtensions>[number];
 
   parse(input: string, options: TParseOptions): TranslationDataset;
 
   formatKey(key: string): string;
+
+  /**
+   * Whether the transformer produces a single file when serialized
+   */
+  isSingleFileOutput: boolean;
 
   parseAggregate(
     inputs: Partial<Record<Locale, string>>,
@@ -41,14 +48,15 @@ export interface LanguageFileTransformer<
 
 type SomeLanguageFileTransformer = LanguageFileTransformer<
   FileFormat,
-  FileExtensions,
+  NonEmptyArray<FileExtension>,
   any,
   any
 >;
 
 export function makeLanguageTransformer<
   TFormat extends FileFormat = FileFormat,
-  TFileExtensions extends FileExtensions = FileExtensions,
+  TFileExtensions extends NonEmptyArray<FileExtension> =
+    NonEmptyArray<FileExtension>,
   TParseOptions extends ParsingOptions = ParsingOptions,
   TSerializeOptions extends SerializationOptions = SerializationOptions,
 >(
@@ -62,7 +70,7 @@ export function makeLanguageTransformer<
       >,
       'canParse'
     >,
-    'parseAggregate' | 'formatKey'
+    'parseAggregate' | 'formatKey' | 'isSingleFileOutput' | 'defaultExtension'
   >
 ): LanguageFileTransformer<
   TFormat,
@@ -72,6 +80,8 @@ export function makeLanguageTransformer<
 > {
   return {
     formatKey: $in => $in, // No transformation
+    isSingleFileOutput: true,
+    defaultExtension: options.extensions[0],
     ...options,
     canParse(extension: string): extension is NoInfer<TFileExtensions>[number] {
       const normalized = extension.toLowerCase().trim();
@@ -92,10 +102,11 @@ export function makeLanguageTransformer<
     ): TranslationDataset {
       const dataset: TranslationDataset = {};
 
-      Object.entries(inputs).forEach(([locale, value]) => {
-        const parsed = options.parse(value, {
+      entries(inputs).forEach(([locale, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const parsed = options.parse(value!, {
           ...parsingOptions,
-          targetLocale: locale as Locale,
+          targetLocale: locale,
         });
         merge(dataset, parsed);
       });

@@ -26,7 +26,7 @@ export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.ANDROID_STRINGS,
   extensions: ['.xml'],
   formatKey,
-
+  isSingleFileOutput: false,
   parse(input: string, options: ParsingOptions): TranslationDataset {
     try {
       const parser = new XMLParser({

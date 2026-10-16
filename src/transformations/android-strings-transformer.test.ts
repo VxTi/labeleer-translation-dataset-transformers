@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   mockDataset,
@@ -19,14 +20,11 @@ describe('android strings serialization', () => {
 
     const serialized = transformer.serialize(dataset, options);
 
-    expect(serialized).toHaveProperty(
-      'values-en/strings.xml',
-      expect.objectContaining({ content: expect.any(String) })
-    );
-    expect(serialized).toHaveProperty(
-      'values-nl/strings.xml',
-      expect.objectContaining({ content: expect.any(String) })
-    );
+    const enFileName = 'values-en/strings.xml';
+    const nlFileName = 'values-nl/strings.xml';
+
+    expect.assert(isNotNil(serialized[enFileName]));
+    expect.assert(isNotNil(serialized[nlFileName]));
     expect(serialized['values-nl/strings.xml'].content).toMatchInlineSnapshot(`
       "<?xml version="1.0" encoding="utf-8"?>
       <resources>
@@ -68,7 +66,8 @@ describe('android strings serialization', () => {
     const serialized = transformer.serialize(input, options);
 
     const fileName = 'values-en/strings.xml';
-    expect(serialized).toHaveProperty(fileName);
+
+    expect.assert(isNotNil(serialized[fileName]));
     expect(serialized[fileName].content).toContain('a regular string');
     expect(serialized[fileName].content).toContain('one strict');
     expect(serialized[fileName].content).toMatchInlineSnapshot(`
@@ -100,7 +99,8 @@ describe('android strings serialization', () => {
     // entity-encodes the quote/apostrophe. aapt XML-decodes `\&apos;` back to
     // `\'` (Android-safe) — a bare `&apos;` would decode to an unescaped `'`.
     const fileName = 'values-en/strings.xml';
-    expect(serialized).toHaveProperty(fileName);
+
+    expect.assert(isNotNil(serialized[fileName]));
     expect(serialized[fileName].content).toContain('it\\&apos;s');
     expect(serialized[fileName].content).toContain('\\&quot;quote\\&quot;');
     expect(serialized[fileName].content).toContain('\\\\ backslash');
@@ -133,7 +133,8 @@ describe('android strings serialization', () => {
 
     // Prefixes the key since it starts with a number, and
     // removes all dots in favor of underscores
-    expect(serialized).toHaveProperty('values-en/strings.xml');
+    const fileName = 'values-en/strings.xml';
+    expect.assert(isNotNil(serialized[fileName]));
     expect(serialized['values-en/strings.xml'].content).toContain(
       '"_123_some_key"'
     );
@@ -259,7 +260,7 @@ describe('android strings parsing', () => {
 
     expect(() =>
       transformer.parse(input, { referenceLocale: 'en_US' })
-    ).toThrowError(
+    ).toThrow(
       'Failed to parse Android Strings XML: Error: Closing Tag is not closed.'
     );
   });

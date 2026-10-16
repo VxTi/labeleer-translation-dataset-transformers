@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { expect, it, describe } from 'vitest';
 import {
   mockDataset,
@@ -124,7 +125,7 @@ describe('xcstrings serialization', () => {
     const result = transformer.serialize(dataset, mockSerializationOptions());
     const fileName = `${DEFAULT_XCSTRINGS_FILE_NAME}.xcstrings`;
 
-    expect(result).toHaveProperty(fileName);
+    expect.assert(isNotNil(result[fileName]));
     expect(result[fileName].content).toContain('must exist');
     expect(result[fileName].content).toMatchInlineSnapshot(`
       "{

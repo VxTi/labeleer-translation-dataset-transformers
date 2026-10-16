@@ -82,6 +82,7 @@ export interface SerializationFileFragment {
 }
 
 export interface SerializationFile {
+  locale?: Locale;
   content: string;
 }
 

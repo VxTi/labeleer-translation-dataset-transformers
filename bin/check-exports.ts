@@ -15,7 +15,7 @@
  * lack a `.js` extension, instead of failing.
  */
 import chalk from 'chalk';
-import { isNil } from 'lodash-es';
+import { isNil } from '@vxti/typed';
 import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -125,7 +125,7 @@ function globToRegExp(pattern: string): RegExp {
   let source = '';
 
   for (let index = 0; index < pattern.length; index++) {
-    const char = pattern[index];
+    const char = pattern.charAt(index);
 
     if (char === '*') {
       if (pattern[index + 1] === '*') {

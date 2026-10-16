@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { isNil } from '@vxti/typed';
 
 export function ellipsize(input: string, maxLength?: number): string {
   if (isNil(maxLength) || input.length <= maxLength) return input;

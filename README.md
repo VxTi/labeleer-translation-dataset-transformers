@@ -30,7 +30,7 @@ via the `FileFormat` enum.
 import {
   defaultTransformerSet,
   FileFormat,
-} from '.labeleer/translation-dataset-transformer.js';
+} from '@labeleer/translation-dataset-transformer';
 
 const jsonString = `{
   "hello_world": {
@@ -60,7 +60,7 @@ information in the file itself and therefore require a `targetLocale`:
 ```typescript
 const dataset = defaultTransformerSet.parse(appleStrings, FileFormat.APPLE_STRINGS, {
   referenceLocale: 'en_US',
-  targetLocale: 'nl_NL',
+  targetLocale:    'nl_NL',
 });
 ```
 
@@ -93,7 +93,7 @@ import {
   defaultTransformerSet,
   FileFormat,
   type TranslationDataset,
-} from '.labeleer/translation-dataset-transformer.js';
+} from '@labeleer/translation-dataset-transformer';
 
 const dataset: TranslationDataset = {
   hello_world: {
@@ -103,7 +103,7 @@ const dataset: TranslationDataset = {
 
 const result = defaultTransformerSet.serialize(dataset, FileFormat.JSON, {
   referenceLocale: 'en_US',
-  locales: ['en_US', 'nl_NL'],
+  locales:         [ 'en_US', 'nl_NL' ],
 });
 
 // {
@@ -119,7 +119,7 @@ each flagged as living in its own directory:
 ```typescript
 const result = defaultTransformerSet.serialize(dataset, FileFormat.ANDROID_STRINGS, {
   referenceLocale: 'en_US',
-  locales: ['en_US', 'nl_NL'],
+  locales:         [ 'en_US', 'nl_NL' ],
 });
 
 // {
@@ -132,16 +132,16 @@ const result = defaultTransformerSet.serialize(dataset, FileFormat.ANDROID_STRIN
 
 Every format supports both parsing and serialization.
 
-| Format Name     | Enum Value                         | File Extensions  |
-|-----------------|------------------------------------|------------------|
-| JSON            | `LanguageFileFormat.JSON`            | `.json`          |
-| YAML            | `LanguageFileFormat.YAML`            | `.yaml`, `.yml`  |
-| Qt Linguist     | `LanguageFileFormat.TS`              | `.ts`            |
-| PO (Gettext)    | `LanguageFileFormat.PO`              | `.po`, `.pot`    |
-| Android Strings | `LanguageFileFormat.ANDROID_STRINGS` | `.xml`           |
-| Apple Strings   | `LanguageFileFormat.APPLE_STRINGS`   | `.strings`       |
-| XLIFF (2.1)     | `LanguageFileFormat.XLIFF`           | `.xliff`, `.xlf` |
-| Apple XCStrings | `LanguageFileFormat.XCSTRINGS`       | `.xcstrings`     |
+| Format Name     | Enum Value                   | File Extensions  |
+|-----------------|------------------------------|------------------|
+| JSON            | `FileFormat.JSON`            | `.json`          |
+| YAML            | `FileFormat.YAML`            | `.yaml`, `.yml`  |
+| Qt Linguist     | `FileFormat.TS`              | `.ts`            |
+| PO (Gettext)    | `FileFormat.PO`              | `.po`, `.pot`    |
+| Android Strings | `FileFormat.ANDROID_STRINGS` | `.xml`           |
+| Apple Strings   | `FileFormat.APPLE_STRINGS`   | `.strings`       |
+| XLIFF (2.1)     | `FileFormat.XLIFF`           | `.xliff`, `.xlf` |
+| Apple XCStrings | `FileFormat.XCSTRINGS`       | `.xcstrings`     |
 
 Helpers for working with formats and extensions:
 
@@ -159,14 +159,14 @@ Helpers for working with formats and extensions:
 `defaultTransformerSet` is a `ParserSet`. You can also build your own over a
 subset (or superset) of transformers with `makeParserSet([...])`.
 
-| Method | Description |
-|--------|-------------|
-| `parse(input, format, options)` | Parse a single file's content into a `TranslationDataset`. |
+| Method                                    | Description                                                                         |
+|-------------------------------------------|-------------------------------------------------------------------------------------|
+| `parse(input, format, options)`           | Parse a single file's content into a `TranslationDataset`.                          |
 | `parseAggregate(inputs, format, options)` | Parse a `Partial<Record<Locale, string>>` map of per-locale files into one dataset. |
-| `serialize(dataset, format, options)` | Serialize a dataset into a `SerializationResult`. |
-| `formats()` | List the `FileFormat`s this set supports. |
-| `has(format)` | Type guard: whether the set supports a format. |
-| `getByFormat(format)` | Retrieve the underlying transformer for a format. |
+| `serialize(dataset, format, options)`     | Serialize a dataset into a `SerializationResult`.                                   |
+| `formats()`                               | List the `FileFormat`s this set supports.                                           |
+| `has(format)`                             | Type guard: whether the set supports a format.                                      |
+| `getByFormat(format)`                     | Retrieve the underlying transformer for a format.                                   |
 
 All methods are synchronous.
 
@@ -243,7 +243,7 @@ names.
 without hand-writing the nested structure:
 
 ```typescript
-import { DatasetBuilder } from '.labeleer/translation-dataset-transformer.js';
+import { DatasetBuilder } from '@labeleer/translation-dataset-transformer';
 
 const dataset = new DatasetBuilder()
   .addTranslation('hello_world', { en_US: 'Hello World!', nl_NL: 'Hallo Wereld!' })

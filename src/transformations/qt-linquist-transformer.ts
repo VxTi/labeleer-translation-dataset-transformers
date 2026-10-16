@@ -23,6 +23,7 @@ import * as z from 'zod/v4';
 export const TsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.TS,
   extensions: ['.ts'],
+  isSingleFileOutput: false,
   parse(input: string, options: ParsingOptions): TranslationDataset {
     try {
       const parser = new XMLParser({

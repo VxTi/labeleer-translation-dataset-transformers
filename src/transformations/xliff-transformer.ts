@@ -19,7 +19,7 @@ import * as z from 'zod/v4';
 export const XLIFFDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.XLIFF,
   extensions: ['.xlf', '.xliff'],
-
+  isSingleFileOutput: false,
   parse(input: string, _options: ParsingOptions): TranslationDataset {
     try {
       const parser = new XMLParser({ ignoreAttributes: false });

@@ -1,3 +1,4 @@
+import { hasArrayLengthAtLeast, isNonEmptyString } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
@@ -25,6 +26,7 @@ import {
 export const PODatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.PO,
   extensions: ['.po', '.pot'],
+  isSingleFileOutput: false,
   parse(input: string, options: ParsingOptions): TranslationDataset {
     const { targetLocale } = options;
 
@@ -100,7 +102,7 @@ export const PODatasetTransformer = makeLanguageTransformer({
           this.extensions
         );
 
-        return [filename, { content }];
+        return [filename, { locale, content }];
       })
     );
   },
@@ -115,14 +117,14 @@ export const PODatasetTransformer = makeLanguageTransformer({
  * `Plural-Forms` rule); absent a plural-rules table this canonical order is a
  * pragmatic, deterministic approximation.
  */
-const PO_PLURAL_ORDER: Plurality[] = [
+const PO_PLURAL_ORDER = [
   Plurality.ONE,
   Plurality.OTHER,
   Plurality.TWO,
   Plurality.FEW,
   Plurality.MANY,
   Plurality.ZERO,
-];
+] as const;
 
 function extractPlurals(
   targetLocale: Locale,
@@ -130,14 +132,17 @@ function extractPlurals(
 ): TranslationPluralization | undefined {
   const plurals: TranslationPluralization = {};
 
-  if (!entry.msgid_plural || entry.msgstr.length <= 1) {
+  const { msgstr } = entry;
+
+  if (!entry.msgid_plural || !hasArrayLengthAtLeast(msgstr, 2)) {
     return;
   }
 
-  entry.msgstr.slice(0, PO_PLURAL_ORDER.length).forEach((plural, index) => {
-    if (plural.trim().length === 0) return;
+  msgstr.slice(0, PO_PLURAL_ORDER.length).forEach((plural, index) => {
+    if (!isNonEmptyString(plural, true)) return;
 
-    const plurality = PO_PLURAL_ORDER[index];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const plurality = PO_PLURAL_ORDER[index]!;
     plurals[targetLocale] ??= {};
     plurals[targetLocale][plurality] = plural;
   });
@@ -197,6 +202,7 @@ function constructPoSerializationFragment(
       poEntry.msgstr = [one ?? '', other ?? ''];
     }
 
+    output.translations[''] ??= {};
     output.translations[''][key] = poEntry;
   }
 

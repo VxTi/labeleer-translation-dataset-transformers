@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   mockParsingOptions,
@@ -92,7 +93,7 @@ describe('apple strings parsing', () => {
 "second-entry" = "dutch \\"second\\"";`;
     expect(() =>
       transformer.parse(input, mockParsingOptions({ targetLocale: undefined }))
-    ).toThrowError('Locale is required for parsing Apple .strings files.');
+    ).toThrow('Locale is required for parsing Apple .strings files.');
   });
 
   it('should skip comments and invalid lines', () => {
@@ -151,14 +152,17 @@ describe('apple strings serialization', () => {
     );
 
     expect(Object.keys(serialized)).toHaveLength(2);
-    expect(serialized).toHaveProperty('en-US.strings');
-    expect(serialized).toHaveProperty('nl-NL.strings');
+    const enFileName = 'en-US.strings';
+    const nlFileName = 'nl-NL.strings';
 
-    expect(serialized['en-US.strings'].content).toMatchInlineSnapshot(`
+    expect.assert(isNotNil(serialized[enFileName]));
+    expect.assert(isNotNil(serialized[nlFileName]));
+
+    expect(serialized[enFileName].content).toMatchInlineSnapshot(`
       ""first-entry" = "english";
       "second-entry" = "english \\"second\\"";"
     `);
-    expect(serialized['nl-NL.strings'].content).toMatchInlineSnapshot(`
+    expect(serialized[nlFileName].content).toMatchInlineSnapshot(`
       ""first-entry" = "dutch";
       "second-entry" = "dutch \\"second\\"";"
     `);
@@ -184,7 +188,8 @@ describe('apple strings serialization', () => {
     const fileName = `${toBCP47(refLang)}.strings`;
 
     expect(serialized).toBeDefined();
-    expect(serialized).toHaveProperty(fileName);
+
+    expect.assert(isNotNil(serialized[fileName]));
     expect(serialized[fileName].content).toMatchInlineSnapshot(
       `""special-entry" = "Line1\\nLine2\\tTabbed\\\\\\"Quote\\\\\\"";"`
     );

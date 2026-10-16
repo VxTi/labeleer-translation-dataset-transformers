@@ -1,4 +1,5 @@
 {
+  "extends": ["@vxti/typed/tsconfig.strict.json"],
   "compilerOptions": {
     "rootDir": ".",
     "skipLibCheck": true,
@@ -13,6 +14,7 @@
     "outDir": "./dist",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "ESNext"],
+    "exactOptionalPropertyTypes": false,
     "allowJs": true,
     "incremental": false,
     "strict": true,

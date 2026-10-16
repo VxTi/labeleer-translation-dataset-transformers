@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import { type SerializationResult } from '../definitions.js';
 import { XLIFFDatasetTransformer } from './xliff-transformer.js';
@@ -82,9 +83,11 @@ describe('XLIFF 2.1 Serialization', () => {
     );
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('en_US');
-    expect(result['en_US'].content).toContain('must exist');
-    expect(result['en_US'].content).toMatchInlineSnapshot(`
+
+    const fileName = 'en_US';
+    expect.assert(isNotNil(result[fileName]));
+    expect(result[fileName].content).toContain('must exist');
+    expect(result[fileName].content).toMatchInlineSnapshot(`
       "<?xml version="1.0" encoding="UTF-8"?>
       <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
         <file id="f1">
@@ -119,8 +122,10 @@ describe('XLIFF 2.1 Serialization', () => {
     );
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('de_DE');
-    expect(result['de_DE'].content).toMatchInlineSnapshot(`
+    const fileName = 'de_DE';
+
+    expect.assert(isNotNil(result[fileName]));
+    expect(result[fileName].content).toMatchInlineSnapshot(`
       "<?xml version="1.0" encoding="UTF-8"?>
       <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
         <file id="f1">

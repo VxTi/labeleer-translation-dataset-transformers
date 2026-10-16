@@ -103,7 +103,7 @@ export function toPOSIX<TBCPLocale extends BCP47Locale>(
  */
 export function getLocaleName(locale: Locale): string {
   try {
-    const [lang, region] = locale.split(/[_-]/); // support both en_US and en-US formats
+    const [lang, region] = locale.split(/[_-]/) as [string, string];
     const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
     const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 

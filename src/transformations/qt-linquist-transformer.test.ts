@@ -1,3 +1,4 @@
+import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import { TsDatasetTransformer } from './qt-linquist-transformer.js';
 import {
@@ -17,6 +18,9 @@ describe('serialization', () => {
     });
 
     const serialized = transformer.serialize(dataset, options);
+
+    expect.assert(isNotNil(serialized['nl_NL.ts']));
+    expect.assert(isNotNil(serialized['en_AU.ts']));
 
     expect(serialized).toHaveProperty('nl_NL.ts', expect.any(Object));
     expect(serialized).toHaveProperty('en_AU.ts', expect.any(Object));
@@ -50,8 +54,10 @@ describe('serialization', () => {
 
     const serialized = transformer.serialize(dataset, options);
 
-    expect(serialized).toBeDefined();
-    expect(serialized['en_US.ts'].content).toMatchInlineSnapshot(`
+    const fileName = 'en_US.ts';
+
+    expect.assert(isNotNil(serialized[fileName]));
+    expect(serialized[fileName].content).toMatchInlineSnapshot(`
       "<?xml version="1.0" encoding="utf-8"?>
       <!DOCTYPE TS>
       <TS version="2.1" sourcelanguage="en_US" language="en_US">
