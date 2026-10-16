@@ -1,17 +1,15 @@
-import { hasArrayLengthAtLeast } from '@vxti/typed';
+import { hasArrayLengthAtLeast, entries } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
-  SerializationFileFragment,
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import { type Locale, toBCP47 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '../util/data-extraction.js';
 
 export interface AppleStringsSerializationOptions extends SerializationOptions {
   keylessTranslation?: boolean;
@@ -110,7 +108,7 @@ function unescapeText(input: string): string {
 function constructAppleStringsSerializationFragment(
   dataset: TranslationDataset,
   targetLocale: Locale
-): SerializationFileFragment {
+): { filename: string; content: string } {
   const kvMapping: Record<string, string> = {};
 
   for (const [key, entry] of entries(dataset)) {

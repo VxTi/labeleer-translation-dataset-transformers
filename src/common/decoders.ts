@@ -15,7 +15,7 @@ import {
   MIN_TAG_LENGTH,
   MIN_TRANSLATION_KEY_LENGTH,
 } from './constants.js';
-import { type TranslationDataset } from '../definitions.js';
+import type { TranslationDataset } from '../types.js';
 
 export const LocaleDecoder = z
   .string()

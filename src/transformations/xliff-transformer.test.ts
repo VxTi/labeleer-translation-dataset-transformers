@@ -1,6 +1,6 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
-import { type SerializationResult } from '../definitions.js';
+import { isNotNil } from '@vxti/typed';
+import { type SerializationResult } from '../types.js';
 import { XLIFFDatasetTransformer } from './xliff-transformer.js';
 import {
   mockDataset,

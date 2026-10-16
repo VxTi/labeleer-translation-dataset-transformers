@@ -1,4 +1,4 @@
-import { type TranslationDataset } from '../definitions.js';
+import type { TranslationDataset } from '../types.js';
 import { Plurality } from '../locales/index.js';
 
 export function mockDataset(

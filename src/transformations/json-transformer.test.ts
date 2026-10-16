@@ -1,10 +1,10 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
+import { isNotNil } from '@vxti/typed';
 import {
   MAX_TRANSLATION_KEY_LENGTH,
   MIN_TRANSLATION_KEY_LENGTH,
 } from '../common/index.js';
-import { type TranslationDataset } from '../definitions.js';
+import { type TranslationDataset } from '../types.js';
 import {
   mockParsingOptions,
   mockDataset,

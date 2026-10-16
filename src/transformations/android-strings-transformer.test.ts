@@ -1,11 +1,11 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
+import { isNotNil } from '@vxti/typed';
 import {
   mockDataset,
   mockParsingOptions,
   mockSerializationOptions,
 } from '../__testutils__/index.js';
-import { type TranslationDataset } from '../definitions.js';
+import type { TranslationDataset } from '../types.js';
 import { Plurality } from '../locales/index.js';
 import { AndroidStringsDatasetTransformer } from './android-strings-transformer.js';
 

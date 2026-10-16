@@ -3,7 +3,7 @@ import type {
   TranslationDataset,
   TranslationLocalizedEntries,
   TranslationPluralization,
-} from './definitions.js';
+} from './types.js';
 import type { Locale } from './locales/index.js';
 /**
  * A builder class for constructing translation datasets.

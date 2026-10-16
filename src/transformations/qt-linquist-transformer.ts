@@ -1,11 +1,10 @@
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
-  SerializationFileFragment,
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import {
@@ -15,9 +14,10 @@ import {
   toPOSIX,
 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries, extractArray } from '../util/data-extraction.js';
+import { extractArray } from '../util/data-extraction.js';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { XMLParser } from 'fast-xml-parser';
+import { entries } from '@vxti/typed';
 import * as z from 'zod/v4';
 
 export const TsDatasetTransformer = makeLanguageTransformer({
@@ -119,7 +119,7 @@ function constructTsSerializationFragment(
   dataset: TranslationDataset,
   locale: Locale | undefined,
   referenceLocale: Locale
-): SerializationFileFragment {
+): { filename: string; content: string } {
   const tsObj = {
     TS: {
       '@_version': '2.1',

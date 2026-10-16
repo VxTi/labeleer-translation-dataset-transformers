@@ -1,13 +1,12 @@
-import { hasArrayLengthAtLeast, isNonEmptyString } from '@vxti/typed';
+import { hasArrayLengthAtLeast, isNonEmptyString, entries } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
-  SerializationFileFragment,
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
   TranslationPluralization,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import {
@@ -16,7 +15,6 @@ import {
   toISO639_1LanguageCode,
 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '../util/data-extraction.js';
 import {
   type GetTextTranslation,
   type GetTextTranslations,
@@ -38,7 +36,7 @@ export const PODatasetTransformer = makeLanguageTransformer({
       const builder = new DatasetBuilder();
 
       Object.values(output.translations).forEach(context => {
-        entries(context).forEach(([key, entry]) => {
+        entries<string, GetTextTranslation>(context).forEach(([key, entry]) => {
           if (!key) return; // skip empty header
 
           const plurals = extractPlurals(targetLocale, entry);
@@ -155,7 +153,7 @@ function constructPoSerializationFragment(
   locale: Locale,
   _referenceLocale: Locale,
   extensions: ['.po', '.pot']
-): SerializationFileFragment {
+): { filename: string; content: string } {
   // TODO: Add support for more headers (e.g., Project-Id-Version, POT-Creation-Date, etc.)
   // And also different encoding types
   const output: GetTextTranslations = {

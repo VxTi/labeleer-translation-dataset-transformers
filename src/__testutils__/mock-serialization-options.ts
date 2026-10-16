@@ -1,4 +1,4 @@
-import type { SerializationOptions } from '../definitions.js';
+import type { SerializationOptions } from '../types.js';
 
 export function mockSerializationOptions<
   T extends SerializationOptions = SerializationOptions,

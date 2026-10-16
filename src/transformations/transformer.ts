@@ -6,7 +6,7 @@ import type {
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
-} from '../definitions.js';
+} from '../types.js';
 import type { FileFormat } from './file-formats.js';
 import type { Locale } from '../locales/index.js';
 import { merge } from 'lodash-es';
@@ -103,8 +103,7 @@ export function makeLanguageTransformer<
       const dataset: TranslationDataset = {};
 
       entries(inputs).forEach(([locale, value]) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const parsed = options.parse(value!, {
+        const parsed = options.parse(value, {
           ...parsingOptions,
           targetLocale: locale,
         });

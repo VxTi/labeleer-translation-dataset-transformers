@@ -6,7 +6,7 @@ import type {
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import { makeLanguageTransformer } from './transformer.js';

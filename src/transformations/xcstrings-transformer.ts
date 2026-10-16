@@ -1,15 +1,15 @@
 import { LocaleDecoder } from '../common/index.js';
 import { DatasetBuilder } from '../dataset-builder.js';
-import {
-  type SerializationOptions,
-  type SerializationResult,
-  type TranslationDataset,
-} from '../definitions.js';
+import type {
+  SerializationOptions,
+  SerializationResult,
+  TranslationDataset,
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import { type Locale, Plurality, toBCP47 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '../util/data-extraction.js';
+import { entries } from '@vxti/typed';
 import { tryParseJson } from '../util/parsing.js';
 import { merge } from 'lodash-es';
 import * as z from 'zod/v4';

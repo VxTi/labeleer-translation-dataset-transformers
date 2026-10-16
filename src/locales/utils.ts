@@ -1,13 +1,14 @@
 import {
-  Locales,
   type Locale,
   type ISO639_1LanguageCode,
   type BCP47Locale,
   type InferBCP47Locale,
   type InferPosixFromBCP47Locale,
   type CountryCode,
+  Locales,
   LocalesSet,
 } from './locales.js';
+import { split } from '@vxti/typed';
 
 /**
  * Checks whether the provided value is a valid `ISO 639-1` language code.
@@ -21,8 +22,8 @@ export function isISO639_1LanguageCode(
 ): value is ISO639_1LanguageCode {
   if (!value) return false;
 
-  const iso639_1Codes = Locales.map(loc => loc.split('_')[0]);
-  return iso639_1Codes.includes(value);
+  const iso639_1Codes = Locales.map(toISO639_1LanguageCode);
+  return iso639_1Codes.includes(value as ISO639_1LanguageCode);
 }
 
 /**
@@ -32,7 +33,7 @@ export function isISO639_1LanguageCode(
  * @returns The ISO 639-1 language code (e.g., `"en"`).
  */
 export function toISO639_1LanguageCode(locale: Locale): ISO639_1LanguageCode {
-  return locale.split('_')[0] as ISO639_1LanguageCode;
+  return split(locale, '_')[0];
 }
 
 /**
@@ -103,13 +104,12 @@ export function toPOSIX<TBCPLocale extends BCP47Locale>(
  */
 export function getLocaleName(locale: Locale): string {
   try {
-    const [lang, region] = locale.split(/[_-]/) as [string, string];
+    const [lang, region] = split(locale, '_');
     const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
     const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
     const language: string | undefined = languageNames.of(lang);
-    const regionName: string | undefined =
-      region ? regionNames.of(region) : undefined;
+    const regionName: string | undefined = regionNames.of(region);
 
     if (!language) {
       return locale;
@@ -127,10 +127,9 @@ export function getLocaleName(locale: Locale): string {
  * @returns The `ISO 3166-1 alpha-2` country/region code (e.g., `"US"` or `"FR"`), or null if not found.
  */
 export function getCountryFromLocale(locale: Locale): CountryCode | null {
-  const parts = locale.split(/[_-]/);
-  if (parts.length !== 2) return null;
+  const parts = split(locale, '_');
 
-  return parts[1] as CountryCode;
+  return parts[1];
 }
 
 /**

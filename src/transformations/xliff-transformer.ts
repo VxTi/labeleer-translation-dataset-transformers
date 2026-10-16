@@ -2,16 +2,15 @@ import { LocaleDecoder } from '../common/index.js';
 import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
-  SerializationFileFragment,
   SerializationOptions,
   SerializationResult,
   TranslationDataset,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import { type Locale, toISO639_1LanguageCode } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '../util/data-extraction.js';
+import { entries } from '@vxti/typed';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { XMLParser } from 'fast-xml-parser';
 import * as z from 'zod/v4';
@@ -116,7 +115,7 @@ function serializeSingular(
   input: TranslationDataset,
   xmlBuilder: XMLBuilder,
   options: SerializationOptions
-): SerializationFileFragment {
+): { filename: string; content: string } {
   const datasetBuilder = new DatasetBuilder();
 
   entries(input).forEach(([key, entry]) => {
@@ -140,7 +139,7 @@ function constructXliff21Fragment(
   dataset: TranslationDataset,
   targetLocale: Locale | undefined,
   sourceLocale: Locale
-): SerializationFileFragment {
+): { filename: string; content: string } {
   const xliffObj = {
     xliff: {
       '@_version': '2.1',

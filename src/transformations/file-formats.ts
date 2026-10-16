@@ -12,28 +12,3 @@ export enum FileFormat {
   XLIFF = 'xliff',
   XCSTRINGS = 'xcstrings',
 }
-
-/**
- * Formats that require compression when exporting multiple locale files.
- */
-export const compressedFormats = [
-  FileFormat.XLIFF,
-  FileFormat.APPLE_STRINGS,
-  FileFormat.ANDROID_STRINGS,
-  FileFormat.TS,
-  FileFormat.PO,
-] as const;
-
-/**
- * Type representing formats that require compression.
- */
-export type CompressedFormat = (typeof compressedFormats)[number];
-
-/**
- * Type guard to check if a format requires compression.
- */
-export function isCompressedFormat(
-  format: FileFormat
-): format is CompressedFormat {
-  return compressedFormats.includes(format as CompressedFormat);
-}

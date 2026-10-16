@@ -6,7 +6,7 @@ import type {
   TranslationDataset,
   TranslationPluralization,
   SerializationFile,
-} from '../definitions.js';
+} from '../types.js';
 import { ParsingError, SerializationError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import {
@@ -16,7 +16,8 @@ import {
   Plurality,
 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries, extractArray } from '../util/data-extraction.js';
+import { entries } from '@vxti/typed';
+import { extractArray } from '../util/data-extraction.js';
 import { XMLParser } from 'fast-xml-parser';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { merge } from 'lodash-es';

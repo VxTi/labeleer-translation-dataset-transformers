@@ -1,7 +1,6 @@
 import type { Locale, Plurality } from './locales/index.js';
 
 export type TranslationKey = string & {};
-
 export type TranslationValue = string & {};
 
 /**
@@ -76,24 +75,22 @@ export interface SerializationOptions {
   locales: Locale[];
 }
 
-export interface SerializationFileFragment {
-  filename: string;
-  content: string;
-}
-
 export interface SerializationFile {
   locale?: Locale;
   content: string;
 }
 
 /**
+ * Name of a serialized file. Only contains the name, not the dir path
+ */
+type FileName = string & {};
+
+/**
  * Serialization output, keyed by file name
  */
 export type SerializationResult = {
-  [filename: string]: SerializationFile;
+  [filename: FileName]: SerializationFile;
 };
-
-export type MaybeArray<T> = Array<T> | T;
 
 export type MakeOptional<T extends object, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
