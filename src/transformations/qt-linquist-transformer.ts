@@ -1,9 +1,9 @@
 import { DatasetBuilder } from '../dataset-builder.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -77,7 +77,7 @@ export const TsDatasetTransformer = makeLanguageTransformer({
   serialize(
     input: TranslationDataset,
     options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const { referenceLocale, locales } = options;
     const nonReferenceLanguages = locales.filter(
       loc => loc !== referenceLocale
@@ -95,22 +95,28 @@ export const TsDatasetTransformer = makeLanguageTransformer({
         referenceLocale
       );
 
-      return {
-        [filename + this.extensions[0]]: { content },
-      };
+      return [
+        {
+          locale: referenceLocale,
+          filePath: filename + this.extensions[0],
+          content,
+        },
+      ];
     }
 
-    return Object.fromEntries(
-      nonReferenceLanguages.map(locale => {
-        const { filename, content } = constructTsSerializationFragment(
-          builder,
-          input,
-          locale,
-          referenceLocale
-        );
-        return [filename + this.extensions[0], { content }];
-      })
-    );
+    return nonReferenceLanguages.map(locale => {
+      const { filename, content } = constructTsSerializationFragment(
+        builder,
+        input,
+        locale,
+        referenceLocale
+      );
+      return {
+        filePath: filename + this.extensions[0],
+        content,
+        locale,
+      };
+    });
   },
 });
 

@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { isNotNil } from '@vxti/typed';
 import {
   MAX_TRANSLATION_KEY_LENGTH,
   MIN_TRANSLATION_KEY_LENGTH,
@@ -10,10 +9,7 @@ import {
   mockDataset,
   mockSerializationOptions,
 } from '../__testutils__/index.js';
-import {
-  DEFAULT_JSON_FILE_NAME,
-  JsonDatasetTransformer,
-} from './json-transformer.js';
+import { JsonDatasetTransformer } from './json-transformer.js';
 
 const transformer = JsonDatasetTransformer;
 
@@ -118,29 +114,8 @@ describe('json serialization', () => {
       mockDataset(),
       mockSerializationOptions()
     );
-    const fileName = `${DEFAULT_JSON_FILE_NAME}.json`;
 
-    expect(serialized).toBeDefined();
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toContain('hello');
-    expect(serialized[fileName].content).toContain('again');
-    expect(serialized[fileName].content).toMatchInlineSnapshot(`
-      "{
-        "first-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-            "nl_NL": "world"
-          }
-        },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-            "nl_NL": "again"
-          }
-        }
-      }"
-    `);
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]?.content).toMatchSnapshot();
   });
 });

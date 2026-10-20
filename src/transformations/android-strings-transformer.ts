@@ -2,7 +2,6 @@ import { DatasetBuilder } from '../dataset-builder.js';
 import type {
   ParsingOptions,
   SerializationOptions,
-  SerializationResult,
   TranslationDataset,
   TranslationPluralization,
   SerializationFile,
@@ -64,7 +63,7 @@ export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     try {
       const perLanguageDatasets: Partial<Record<Locale, TranslationDataset>> =
         constructPerLanguageDatasets(dataset, options.locales);
@@ -74,17 +73,17 @@ export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
         ignoreAttributes: false,
       });
 
-      return Object.fromEntries(
-        entries(perLanguageDatasets).map(
-          ([locale, dataset]): [string, SerializationFile] => {
-            const content = buildXmlDataset(builder, dataset, locale);
-            const dirname = androidValuesDirectory(locale, options.locales);
-            const filename = [dirname, 'strings'].join('/');
+      return entries(perLanguageDatasets).map(([locale, dataset]) => {
+        const content = buildXmlDataset(builder, dataset, locale);
+        const dirname = androidValuesDirectory(locale, options.locales);
+        const filename = [dirname, 'strings'].join('/');
 
-            return [filename + this.extensions[0], { content }];
-          }
-        )
-      );
+        return {
+          filePath: filename + this.extensions[0],
+          locale,
+          content,
+        };
+      });
     } catch (e) {
       throw new SerializationError(
         'Something went wrong whilst attempting to serialize Android Strings XML: ',

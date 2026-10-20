@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`json serialization > should serialize a simple JSON dataset 1`] = `
+"{
+  "first-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "hello",
+      "nl_NL": "world"
+    }
+  },
+  "second-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "hello",
+      "nl_NL": "again"
+    }
+  }
+}"
+`;

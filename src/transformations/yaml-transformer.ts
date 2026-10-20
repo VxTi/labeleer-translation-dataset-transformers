@@ -1,10 +1,10 @@
 import YAML, { parse } from 'yaml';
 import { JsonTranslationDatasetDecoder } from '../common/decoders.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -39,12 +39,15 @@ export const YamlDatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     _options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const content = YAML.stringify(dataset);
 
-    return {
-      [DEFAULT_YAML_FILE_NAME + this.extensions[0]]: { content },
-    };
+    return [
+      {
+        content,
+        filePath: DEFAULT_YAML_FILE_NAME + this.extensions[0],
+      },
+    ];
   },
 });
 

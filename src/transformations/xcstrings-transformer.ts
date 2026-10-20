@@ -1,9 +1,9 @@
 import { LocaleDecoder } from '../common/index.js';
 import { DatasetBuilder } from '../dataset-builder.js';
-import type {
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -73,7 +73,7 @@ export const XCStringsDatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const { referenceLocale, locales } = options;
     const xcstrings: XCStringsDataset = {
       // Xcode String Catalogs use BCP 47 language identifiers (`en`, `en-GB`).
@@ -126,9 +126,12 @@ export const XCStringsDatasetTransformer = makeLanguageTransformer({
 
     const content = JSON.stringify(xcstrings, null, 2);
 
-    return {
-      [DEFAULT_XCSTRINGS_FILE_NAME + this.extensions[0]]: { content },
-    };
+    return [
+      {
+        filePath: DEFAULT_XCSTRINGS_FILE_NAME + this.extensions[0],
+        content,
+      },
+    ];
   },
 });
 
@@ -158,10 +161,6 @@ export const XCStringsAtomicLocalizationEntryDecoder = z.object({
     value: z.string(),
   }),
 });
-
-export type XCStringsAtomicLocalizationEntry = z.infer<
-  typeof XCStringsAtomicLocalizationEntryDecoder
->;
 
 export const pluralLocalizationEntry = z.object({
   variations: z.object({

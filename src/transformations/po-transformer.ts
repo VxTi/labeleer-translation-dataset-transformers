@@ -1,11 +1,11 @@
 import { hasArrayLengthAtLeast, isNonEmptyString, entries } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
-  TranslationPluralization,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
+  type TranslationPluralization,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -88,21 +88,19 @@ export const PODatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const { locales, referenceLocale } = options;
 
-    return Object.fromEntries(
-      locales.map((locale: Locale) => {
-        const { filename, content } = constructPoSerializationFragment(
-          dataset,
-          locale,
-          referenceLocale,
-          this.extensions
-        );
+    return locales.map((locale: Locale) => {
+      const { filename, content } = constructPoSerializationFragment(
+        dataset,
+        locale,
+        referenceLocale,
+        this.extensions
+      );
 
-        return [filename, { locale, content }];
-      })
-    );
+      return { filePath: filename, locale, content };
+    });
   },
 });
 

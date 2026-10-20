@@ -76,21 +76,17 @@ export interface SerializationOptions {
 }
 
 export interface SerializationFile {
+  /**
+   * Only present for multi-file localization formats, e.g., Apple Strings or Android Strings.
+   */
   locale?: Locale;
   content: string;
+  /**
+   * Path of the serialized file.
+   * Can contain slashes (multi-file formats, e.g., `values/strings-en.xml`)
+   */
+  filePath: string;
 }
-
-/**
- * Name of a serialized file. Only contains the name, not the dir path
- */
-type FileName = string & {};
-
-/**
- * Serialization output, keyed by file name
- */
-export type SerializationResult = {
-  [filename: FileName]: SerializationFile;
-};
 
 export type MakeOptional<T extends object, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;

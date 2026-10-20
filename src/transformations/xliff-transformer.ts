@@ -1,16 +1,16 @@
 import { LocaleDecoder } from '../common/index.js';
 import { DatasetBuilder } from '../dataset-builder.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
 import { type Locale, toISO639_1LanguageCode } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '@vxti/typed';
+import { entries, isEmptyArray } from '@vxti/typed';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
 import { XMLParser } from 'fast-xml-parser';
 import * as z from 'zod/v4';
@@ -64,7 +64,7 @@ export const XLIFFDatasetTransformer = makeLanguageTransformer({
   serialize(
     input: TranslationDataset,
     options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const { locales, referenceLocale } = options;
     const builder = new Builder({
       ignoreAttributes: false,
@@ -77,37 +77,43 @@ export const XLIFFDatasetTransformer = makeLanguageTransformer({
     );
 
     // If there are no non-reference locales, create a single fragment with only the source language.
-    if (nonReferenceLocales.length === 0) {
+    if (isEmptyArray(nonReferenceLocales)) {
       const { filename, content } = serializeSingular(input, builder, options);
-      return {
-        [filename]: { content },
-      };
+      return [
+        {
+          locale: referenceLocale,
+          filePath: filename,
+          content,
+        },
+      ];
     }
 
-    return Object.fromEntries(
-      nonReferenceLocales.map((locale: Locale) => {
-        const dataset: TranslationDataset = {};
+    return nonReferenceLocales.map((locale: Locale) => {
+      const dataset: TranslationDataset = {};
 
-        entries(input).forEach(([key, entry]) => {
-          dataset[key] = {
-            plurals: {},
-            translations: {
-              [referenceLocale]: entry.translations[referenceLocale] || '',
-              [locale]: entry.translations[locale] || '',
-            },
-          };
-        });
+      entries(input).forEach(([key, entry]) => {
+        dataset[key] = {
+          plurals: {},
+          translations: {
+            [referenceLocale]: entry.translations[referenceLocale] || '',
+            [locale]: entry.translations[locale] || '',
+          },
+        };
+      });
 
-        const { filename, content } = constructXliff21Fragment(
-          builder,
-          dataset,
-          locale,
-          referenceLocale
-        );
+      const { filename, content } = constructXliff21Fragment(
+        builder,
+        dataset,
+        locale,
+        referenceLocale
+      );
 
-        return [filename, { content }];
-      })
-    );
+      return {
+        filePath: filename,
+        locale,
+        content,
+      };
+    });
   },
 });
 

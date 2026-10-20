@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { isNotNil } from '@vxti/typed';
 import {
   mockDataset,
   mockParsingOptions,
@@ -19,28 +18,9 @@ describe('android strings serialization', () => {
     const dataset = mockDataset();
 
     const serialized = transformer.serialize(dataset, options);
-
-    const enFileName = 'values-en/strings.xml';
-    const nlFileName = 'values-nl/strings.xml';
-
-    expect.assert(isNotNil(serialized[enFileName]));
-    expect.assert(isNotNil(serialized[nlFileName]));
-    expect(serialized['values-nl/strings.xml'].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="utf-8"?>
-      <resources>
-        <string name="first_entry">world</string>
-        <string name="second_entry">again</string>
-      </resources>
-      "
-    `);
-    expect(serialized['values-en/strings.xml'].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="utf-8"?>
-      <resources>
-        <string name="first_entry">hello</string>
-        <string name="second_entry">hello</string>
-      </resources>
-      "
-    `);
+    expect(serialized).toHaveLength(2);
+    expect(serialized[0]).toMatchSnapshot();
+    expect(serialized[1]).toMatchSnapshot();
   });
 
   it('should serialize an android strings dataset with pluralization', () => {
@@ -65,21 +45,8 @@ describe('android strings serialization', () => {
 
     const serialized = transformer.serialize(input, options);
 
-    const fileName = 'values-en/strings.xml';
-
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toContain('a regular string');
-    expect(serialized[fileName].content).toContain('one strict');
-    expect(serialized[fileName].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="utf-8"?>
-      <resources>
-        <string name="regular">a regular string</string>
-        <plurals name="strict">
-          <item quantity="one">one strict</item>
-        </plurals>
-      </resources>
-      "
-    `);
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]).toMatchSnapshot();
   });
 
   it('escapes Android special characters (apostrophe, quote, backslash)', () => {
@@ -98,12 +65,13 @@ describe('android strings serialization', () => {
     // The backslash escape guards Android's parser; the XML builder then
     // entity-encodes the quote/apostrophe. aapt XML-decodes `\&apos;` back to
     // `\'` (Android-safe) — a bare `&apos;` would decode to an unescaped `'`.
-    const fileName = 'values-en/strings.xml';
-
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toContain('it\\&apos;s');
-    expect(serialized[fileName].content).toContain('\\&quot;quote\\&quot;');
-    expect(serialized[fileName].content).toContain('\\\\ backslash');
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]?.content).toSatisfy(
+      (input: string) =>
+        input.includes('it\\&apos;s') &&
+        input.includes('\\&quot;quote\\&quot;') &&
+        input.includes('\\\\ backslash')
+    );
   });
 
   it('adds region qualifiers when locales share a language', () => {
@@ -115,7 +83,7 @@ describe('android strings serialization', () => {
       })
     );
 
-    const filenames = Object.keys(serialized).sort();
+    const filenames = serialized.map(f => f.filePath).sort();
     expect(filenames).toEqual([
       'values-en-GB/strings.xml',
       'values-en-US/strings.xml',
@@ -133,11 +101,8 @@ describe('android strings serialization', () => {
 
     // Prefixes the key since it starts with a number, and
     // removes all dots in favor of underscores
-    const fileName = 'values-en/strings.xml';
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized['values-en/strings.xml'].content).toContain(
-      '"_123_some_key"'
-    );
+    expect(serialized[0]?.filePath).toBe('values-en/strings.xml');
+    expect(serialized[0]?.content).toContain('"_123_some_key"');
   });
 });
 

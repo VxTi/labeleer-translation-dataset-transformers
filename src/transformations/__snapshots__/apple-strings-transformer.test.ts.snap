@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`apple strings parsing > should aggregate several apple strings datasets 1`] = `
+{
+  "first-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "english",
+      "nl_NL": "dutch",
+    },
+  },
+  "second-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "english "second"",
+      "nl_NL": "dutch "second"",
+    },
+  },
+}
+`;
+
+exports[`apple strings parsing > should parse a simple apple strings dataset 1`] = `
+{
+  "first-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "dutch",
+    },
+  },
+  "second-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "dutch "second"",
+    },
+  },
+}
+`;
+
+exports[`apple strings parsing > should skip comments and invalid lines 1`] = `
+{
+  "another-valid-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "another value",
+    },
+  },
+  "valid-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "value",
+    },
+  },
+}
+`;
+
+exports[`apple strings serialization > should escape special characters 1`] = `""special-entry" = "Line1\\nLine2\\tTabbed\\\\\\"Quote\\\\\\"";"`;
+
+exports[`apple strings serialization > should serialize a dataset into apple strings 1`] = `
+{
+  "content": ""first-entry" = "english";
+"second-entry" = "english \\"second\\"";",
+  "filePath": "en-US.strings",
+  "locale": "en_US",
+}
+`;
+
+exports[`apple strings serialization > should serialize a dataset into apple strings 2`] = `
+{
+  "content": ""first-entry" = "dutch";
+"second-entry" = "dutch \\"second\\"";",
+  "filePath": "nl-NL.strings",
+  "locale": "nl_NL",
+}
+`;

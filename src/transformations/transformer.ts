@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { entries, type NonEmptyArray } from '@vxti/typed';
-import type {
-  MakeOptional,
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type MakeOptional,
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import type { FileFormat } from './file-formats.js';
 import type { Locale } from '../locales/index.js';
@@ -43,7 +43,7 @@ export interface LanguageFileTransformer<
   serialize(
     dataset: TranslationDataset,
     options: TSerializeOptions
-  ): SerializationResult;
+  ): SerializationFile[];
 }
 
 type SomeLanguageFileTransformer = LanguageFileTransformer<
@@ -191,7 +191,7 @@ export interface ParserSet<TTransformers extends SomeLanguageFileTransformer> {
     dataset: TranslationDataset,
     format: InferLanguageFileFormat<TTransformers>,
     options: SerializationOptions
-  ): SerializationResult;
+  ): SerializationFile[];
 }
 
 export function makeParserSet<
@@ -230,7 +230,7 @@ export function makeParserSet<
     dataset: TranslationDataset,
     format: InferLanguageFileFormat<TOpt>,
     options: SerializationOptions
-  ): SerializationResult => getByFormat(format).serialize(dataset, options);
+  ): SerializationFile[] => getByFormat(format).serialize(dataset, options);
 
   const formats = (): InferLanguageFileFormat<TTransformers>[] => {
     return transformers.map(

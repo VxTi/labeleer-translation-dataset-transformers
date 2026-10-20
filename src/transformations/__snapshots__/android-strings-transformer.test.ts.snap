@@ -1,0 +1,42 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`android strings serialization > should serialize a simple Android Strings dataset 1`] = `
+{
+  "content": "<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="first_entry">hello</string>
+  <string name="second_entry">hello</string>
+</resources>
+",
+  "filePath": "values-en/strings.xml",
+  "locale": "en_US",
+}
+`;
+
+exports[`android strings serialization > should serialize a simple Android Strings dataset 2`] = `
+{
+  "content": "<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="first_entry">world</string>
+  <string name="second_entry">again</string>
+</resources>
+",
+  "filePath": "values-nl/strings.xml",
+  "locale": "nl_NL",
+}
+`;
+
+exports[`android strings serialization > should serialize an android strings dataset with pluralization 1`] = `
+{
+  "content": "<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="regular">a regular string</string>
+  <plurals name="strict">
+    <item quantity="one">one strict</item>
+  </plurals>
+</resources>
+",
+  "filePath": "values-en/strings.xml",
+  "locale": "en_US",
+}
+`;

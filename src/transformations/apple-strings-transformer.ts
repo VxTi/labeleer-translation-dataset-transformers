@@ -1,10 +1,10 @@
 import { hasArrayLengthAtLeast, entries } from '@vxti/typed';
 import { DatasetBuilder } from '../dataset-builder.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -71,15 +71,19 @@ export const AppleStringsDatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     options: AppleStringsSerializationOptions
-  ): SerializationResult {
-    return Object.fromEntries(
-      options.locales.map(loc => {
-        const { filename, content } =
-          constructAppleStringsSerializationFragment(dataset, loc);
+  ): SerializationFile[] {
+    return options.locales.map(locale => {
+      const { filename, content } = constructAppleStringsSerializationFragment(
+        dataset,
+        locale
+      );
 
-        return [filename + this.extensions[0], { content }];
-      })
-    );
+      return {
+        filePath: filename + this.extensions[0],
+        locale,
+        content,
+      };
+    });
   },
 });
 

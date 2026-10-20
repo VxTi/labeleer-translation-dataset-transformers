@@ -1,11 +1,11 @@
 import { ellipsize } from '../util/formatting.js';
 import { tryParseJson } from '../util/parsing.js';
 import { JsonTranslationDatasetDecoder } from '../common/index.js';
-import type {
-  ParsingOptions,
-  SerializationOptions,
-  SerializationResult,
-  TranslationDataset,
+import {
+  type ParsingOptions,
+  type SerializationFile,
+  type SerializationOptions,
+  type TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -35,12 +35,15 @@ export const JsonDatasetTransformer = makeLanguageTransformer({
   serialize(
     dataset: TranslationDataset,
     _options: SerializationOptions
-  ): SerializationResult {
+  ): SerializationFile[] {
     const content = JSON.stringify(dataset, null, 2);
 
-    return {
-      [DEFAULT_JSON_FILE_NAME + this.extensions[0]]: { content },
-    };
+    return [
+      {
+        filePath: DEFAULT_JSON_FILE_NAME + this.extensions[0],
+        content,
+      },
+    ];
   },
 });
 

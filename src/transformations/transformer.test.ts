@@ -74,6 +74,24 @@ describe('serializer', () => {
       });
     });
   });
+
+  it.each(transformerSet.multipleOutputFormats)(
+    'should include a locale object for all multi-file formats (fmt %s)',
+    fmt => {
+      const result = transformerSet.getByFormat(fmt).serialize(
+        {
+          someLabel: {
+            translations: {
+              en_US: 'hello world!',
+              nl_NL: 'test 123',
+            },
+          },
+        },
+        { referenceLocale: 'nl_NL', locales: ['en_US', 'nl_NL'] }
+      );
+      console.log(result);
+    }
+  );
 });
 
 describe('getByExtension', () => {

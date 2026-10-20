@@ -1,4 +1,3 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   mockParsingOptions,
@@ -40,24 +39,7 @@ describe('apple strings parsing', () => {
         }),
       },
     });
-    expect(aggregated).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "english",
-            "nl_NL": "dutch",
-          },
-        },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "english "second"",
-            "nl_NL": "dutch "second"",
-          },
-        },
-      }
-    `);
+    expect(aggregated).toMatchSnapshot();
   });
 
   it('should parse a simple apple strings dataset', () => {
@@ -69,22 +51,7 @@ describe('apple strings parsing', () => {
       mockParsingOptions({ targetLocale: 'en_US' })
     );
 
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "dutch",
-          },
-        },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "dutch "second"",
-          },
-        },
-      }
-    `);
+    expect(parsed).toMatchSnapshot();
   });
 
   it('should throw an error when no locale is provided', () => {
@@ -108,22 +75,7 @@ invalid line
       mockParsingOptions({ targetLocale: 'en_US' })
     );
 
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "another-valid-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "another value",
-          },
-        },
-        "valid-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "value",
-          },
-        },
-      }
-    `);
+    expect(parsed).toMatchSnapshot();
   });
 });
 
@@ -151,21 +103,10 @@ describe('apple strings serialization', () => {
       })
     );
 
-    expect(Object.keys(serialized)).toHaveLength(2);
-    const enFileName = 'en-US.strings';
-    const nlFileName = 'nl-NL.strings';
+    expect(serialized).toHaveLength(2);
 
-    expect.assert(isNotNil(serialized[enFileName]));
-    expect.assert(isNotNil(serialized[nlFileName]));
-
-    expect(serialized[enFileName].content).toMatchInlineSnapshot(`
-      ""first-entry" = "english";
-      "second-entry" = "english \\"second\\"";"
-    `);
-    expect(serialized[nlFileName].content).toMatchInlineSnapshot(`
-      ""first-entry" = "dutch";
-      "second-entry" = "dutch \\"second\\"";"
-    `);
+    expect(serialized[0]).toMatchSnapshot();
+    expect(serialized[1]).toMatchSnapshot();
   });
 
   it('should escape special characters', () => {
@@ -186,12 +127,8 @@ describe('apple strings serialization', () => {
     );
 
     const fileName = `${toBCP47(refLang)}.strings`;
-
-    expect(serialized).toBeDefined();
-
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toMatchInlineSnapshot(
-      `""special-entry" = "Line1\\nLine2\\tTabbed\\\\\\"Quote\\\\\\"";"`
-    );
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]?.filePath).toEqual(fileName);
+    expect(serialized[0]?.content).toMatchSnapshot();
   });
 });

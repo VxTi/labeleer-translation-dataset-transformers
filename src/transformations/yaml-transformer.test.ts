@@ -26,8 +26,8 @@ describe('yaml serialization', () => {
 
     expect(serialized).toBeDefined();
     expect(serialized).toMatchInlineSnapshot(`
-      {
-        "labels.yml": {
+      [
+        {
           "content": "pluralForm:
         translations: {}
         plurals:
@@ -36,8 +36,9 @@ describe('yaml serialization', () => {
           nl_NL:
             other: world
       ",
+          "filePath": "labels.yml",
         },
-      }
+      ]
     `);
   });
 });
