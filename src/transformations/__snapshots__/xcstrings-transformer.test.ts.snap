@@ -1,0 +1,100 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`xcstrings serialization > should serialize a simple dataset into xcstrings 1`] = `
+"{
+  "sourceLanguage": "en-US",
+  "strings": {
+    "first-entry": {
+      "comment": "",
+      "extractionState": "manual",
+      "localizations": {
+        "en-US": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hello"
+          }
+        },
+        "nl-NL": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "world"
+          }
+        }
+      }
+    },
+    "second-entry": {
+      "comment": "",
+      "extractionState": "manual",
+      "localizations": {
+        "en-US": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hello"
+          }
+        },
+        "nl-NL": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "again"
+          }
+        }
+      }
+    },
+    "strict": {
+      "comment": "",
+      "extractionState": "manual",
+      "localizations": {
+        "en-US": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "must exist"
+          }
+        }
+      }
+    },
+    "plural": {
+      "comment": "",
+      "extractionState": "manual",
+      "localizations": {
+        "en-US": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "hello"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "helloos"
+                }
+              }
+            }
+          }
+        },
+        "nl-NL": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "hallo"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "halloos"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}"
+`;

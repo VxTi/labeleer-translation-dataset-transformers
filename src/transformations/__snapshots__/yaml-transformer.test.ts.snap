@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`yaml parsing > should parse a simple dataset 1`] = `
+{
+  "first-entry": {
+    "translations": {
+      "en_US": "hello world",
+      "nl_NL": "hallo wereld",
+    },
+  },
+}
+`;
+
+exports[`yaml serialization > should serialize a simple YAML dataset 1`] = `
+"pluralForm:
+  translations: {}
+  plurals:
+    en_US:
+      one: hello
+    nl_NL:
+      other: world
+"
+`;
+
+exports[`yaml serialization > should serialize a simple YAML dataset 2`] = `undefined`;

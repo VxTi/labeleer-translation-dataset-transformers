@@ -22,8 +22,8 @@ describe('serializer', () => {
       );
 
       expect(result).toHaveLength(3);
-      expect(result.map(s => s.locale)).toContain(['en_US', 'nl_NL', 'fr_FR']);
-      expect(result.map(s => s.filePath)).toContain([
+      expect(result.map(s => s.locale)).toEqual(['en_US', 'nl_NL', 'fr_FR']);
+      expect(result.map(s => s.filePath)).toEqual([
         'values-en/strings.xml',
         'values-nl/strings.xml',
         'values-fr/strings.xml',
@@ -42,7 +42,7 @@ describe('serializer', () => {
         })
       );
       expect(result).toHaveLength(3);
-      expect(result.map(r => r.filePath)).toContainEqual([
+      expect(result.map(r => r.filePath)).toEqual([
         'en-US.strings',
         'nl-NL.strings',
         'fr-FR.strings',
@@ -61,7 +61,7 @@ describe('serializer', () => {
         })
       );
       expect(result).toHaveLength(2);
-      expect(result.map(s => s.locale)).toContain(['en_US', 'fr_FR']);
+      expect(result.map(s => s.locale)).toEqual(['nl_NL', 'fr_FR']); // excludes ref locale
     });
   });
 

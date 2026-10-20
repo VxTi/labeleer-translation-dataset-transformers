@@ -96,7 +96,7 @@ describe('XLIFF 2.1 Serialization', () => {
       })
     );
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1); // excludes ref locale
     expect(result[0]?.filePath).toEqual('de_DE.xlf');
     expect(result[0]?.content).toMatchSnapshot();
   });
@@ -109,9 +109,9 @@ describe('XLIFF 2.1 Serialization', () => {
       locales: ['en_US', 'fr_FR', 'es_ES'],
     });
 
-    expect(result).toHaveLength(3);
-    expect(result.map(r => r.locale)).toContainEqual([
-      'en_US',
+    expect(result).toHaveLength(2); // excludes ref locale
+    expect(result.map(r => r.locale)).toEqual([
+      // 'en_US',
       'fr_FR',
       'es_ES',
     ]);

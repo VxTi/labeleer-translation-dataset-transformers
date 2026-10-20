@@ -21,25 +21,14 @@ describe('yaml serialization', () => {
           },
         },
       },
-      mockSerializationOptions()
+      mockSerializationOptions({ locales: ['nl_NL', 'en_US'] })
     );
 
     expect(serialized).toBeDefined();
-    expect(serialized).toMatchInlineSnapshot(`
-      [
-        {
-          "content": "pluralForm:
-        translations: {}
-        plurals:
-          en_US:
-            one: hello
-          nl_NL:
-            other: world
-      ",
-          "filePath": "labels.yml",
-        },
-      ]
-    `);
+    expect(serialized).toHaveLength(1); // Always one file regardless of locale count
+    expect(serialized[0]).not.toHaveProperty('locale'); // All contained, so no locale property
+    expect(serialized[0]?.content).toMatchSnapshot();
+    expect(serialized[1]?.content).toMatchSnapshot();
   });
 });
 
@@ -54,15 +43,6 @@ describe('yaml parsing', () => {
 
     const parsed = transformer.parse(input, { referenceLocale: 'en_US' });
     expect(parsed).toBeDefined();
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "translations": {
-            "en_US": "hello world",
-            "nl_NL": "hallo wereld",
-          },
-        },
-      }
-    `);
+    expect(parsed).toMatchSnapshot();
   });
 });

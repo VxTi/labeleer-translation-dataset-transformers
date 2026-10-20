@@ -23,3 +23,45 @@ exports[`XLIFF 2.1 Serialization > serializes dataset for a single locale (refer
 </xliff>
 "
 `;
+
+exports[`XLIFF 2.1 Serialization > serializes dataset with source and target languages 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+  <file id="f1">
+    <unit id="first-entry">
+      <segment>
+        <source>hello</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="second-entry">
+      <segment>
+        <source>hello</source>
+        <target/>
+      </segment>
+    </unit>
+  </file>
+</xliff>
+"
+`;
+
+exports[`XLIFF 2.1 Serialization > serializes multiple locale fragments 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="fr">
+  <file id="f1">
+    <unit id="first-entry">
+      <segment>
+        <source>hello</source>
+        <target/>
+      </segment>
+    </unit>
+    <unit id="second-entry">
+      <segment>
+        <source>hello</source>
+        <target/>
+      </segment>
+    </unit>
+  </file>
+</xliff>
+"
+`;

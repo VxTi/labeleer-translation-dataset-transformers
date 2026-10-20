@@ -124,8 +124,8 @@ describe('xcstrings serialization', () => {
     const result = transformer.serialize(dataset, mockSerializationOptions());
     const fileName = `${DEFAULT_XCSTRINGS_FILE_NAME}.xcstrings`;
 
-    expect(result).toHaveLength(2);
-    expect(result).toHaveProperty('locale');
+    expect(result).toHaveLength(1); // single file output
+    expect(result).not.toHaveProperty('locale');
     expect(result[0]?.filePath).toEqual(fileName);
     expect(result[0]?.content).toMatchSnapshot();
   });

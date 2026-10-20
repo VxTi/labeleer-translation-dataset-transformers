@@ -17,7 +17,7 @@ import * as z from 'zod/v4';
 export const XCStringsDatasetTransformer = makeLanguageTransformer({
   fileFormat: FileFormat.XCSTRINGS,
   extensions: ['.xcstrings'],
-
+  isSingleFileOutput: true,
   parse(input: string): TranslationDataset {
     const json = tryParseJson(input);
     if (!json) {
