@@ -68,7 +68,8 @@ describe('serializer', () => {
   it.each(transformerSet.multipleOutputFormats)(
     'should include a locale object for all multi-file formats (fmt %s)',
     fmt => {
-      const result = transformerSet.getByFormat(fmt).serialize(
+      const transformer = transformerSet.getByFormat(fmt);
+      const result = transformer.serialize(
         {
           someLabel: {
             translations: {
@@ -79,7 +80,11 @@ describe('serializer', () => {
         },
         { referenceLocale: 'nl_NL', locales: ['en_US', 'nl_NL'] }
       );
-      console.log(result);
+      expect(result.length).toBeGreaterThan(0);
+      expect(result[0]).toHaveProperty('locale');
+      expect(result[0]?.filePath).toSatisfy((name: string) =>
+        name.endsWith(transformer.extensions[0])
+      );
     }
   );
 });
