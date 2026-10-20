@@ -1,4 +1,3 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import { TsDatasetTransformer } from './qt-linquist-transformer.js';
 import {
@@ -18,31 +17,9 @@ describe('serialization', () => {
     });
 
     const serialized = transformer.serialize(dataset, options);
-
-    expect.assert(isNotNil(serialized['nl_NL.ts']));
-    expect.assert(isNotNil(serialized['en_AU.ts']));
-
-    expect(serialized).toHaveProperty('nl_NL.ts', expect.any(Object));
-    expect(serialized).toHaveProperty('en_AU.ts', expect.any(Object));
-
-    expect(serialized['nl_NL.ts'].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="utf-8"?>
-      <!DOCTYPE TS>
-      <TS version="2.1" sourcelanguage="en_US" language="nl_NL">
-        <context>
-          <name>Labeleer Translations</name>
-          <message id="first-entry">
-            <source>hello</source>
-            <translation>world</translation>
-          </message>
-          <message id="second-entry">
-            <source>hello</source>
-            <translation>again</translation>
-          </message>
-        </context>
-      </TS>
-      "
-    `);
+    expect(serialized).toHaveLength(2);
+    expect(serialized[0]?.content).toMatchSnapshot();
+    expect(serialized[1]?.content).toMatchSnapshot();
   });
 
   it('should serialize a Qt dataset even if there is just a single locale', () => {
@@ -54,25 +31,8 @@ describe('serialization', () => {
 
     const serialized = transformer.serialize(dataset, options);
 
-    const fileName = 'en_US.ts';
-
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="utf-8"?>
-      <!DOCTYPE TS>
-      <TS version="2.1" sourcelanguage="en_US" language="en_US">
-        <context>
-          <name>Labeleer Translations</name>
-          <message id="first-entry">
-            <source>hello</source>
-          </message>
-          <message id="second-entry">
-            <source>hello</source>
-          </message>
-        </context>
-      </TS>
-      "
-    `);
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]?.content).toMatchSnapshot();
   });
 });
 
@@ -98,24 +58,22 @@ describe('qt linquist parsing', () => {
       mockParsingOptions({ referenceLocale: 'en_US' })
     );
     expect(parsed).toBeDefined();
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-            "nl_NL": "world",
-          },
+    expect(parsed).toMatchObject({
+      'first-entry': {
+        plurals: {},
+        translations: {
+          en_US: 'hello',
+          nl_NL: 'world',
         },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-            "nl_NL": "again",
-          },
+      },
+      'second-entry': {
+        plurals: {},
+        translations: {
+          en_US: 'hello',
+          nl_NL: 'again',
         },
-      }
-    `);
+      },
+    });
   });
 
   it('should parse a TS set even if there are no translations other than the reference', () => {
@@ -134,21 +92,19 @@ describe('qt linquist parsing', () => {
     const parsed = transformer.parse(dataset, mockParsingOptions());
 
     expect(parsed).toBeDefined();
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-          },
+    expect(parsed).toMatchObject({
+      'first-entry': {
+        plurals: {},
+        translations: {
+          en_US: 'hello',
         },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "world",
-          },
+      },
+      'second-entry': {
+        plurals: {},
+        translations: {
+          en_US: 'world',
         },
-      }
-    `);
+      },
+    });
   });
 });

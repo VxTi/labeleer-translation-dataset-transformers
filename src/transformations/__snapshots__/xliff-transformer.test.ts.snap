@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`XLIFF 2.1 Serialization > serializes dataset for a single locale (reference only) 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+  <file id="f1">
+    <unit id="first-entry">
+      <segment>
+        <source>hello</source>
+      </segment>
+    </unit>
+    <unit id="second-entry">
+      <segment>
+        <source>hello</source>
+      </segment>
+    </unit>
+    <unit id="strict">
+      <segment>
+        <source>must exist</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>
+"
+`;

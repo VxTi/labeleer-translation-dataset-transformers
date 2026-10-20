@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`po parsing > should parse PO files correctly 1`] = `
+{
+  "first-entry": {
+    "plurals": {
+      "en_US": {
+        "one": "0 hellos",
+        "other": "1 hello",
+        "two": "2 hellos",
+      },
+    },
+    "translations": {},
+  },
+  "second-entry": {
+    "plurals": {},
+    "translations": {
+      "en_US": "hello",
+    },
+  },
+}
+`;
+
+exports[`po serialization > should serialize PO files correctly 1`] = `
+{
+  "content": "msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Language: en\\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\\n"
+
+msgid "regular"
+msgstr "hello world!"
+
+msgid "something-plural"
+msgid_plural "There are {count} items"
+msgstr[0] "There is one item"
+msgstr[1] "There are {count} items"
+",
+  "filePath": "en_US.po",
+  "locale": "en_US",
+}
+`;

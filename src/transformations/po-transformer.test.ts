@@ -1,4 +1,3 @@
-import { isNotNil } from '@vxti/typed';
 import { describe, expect, it } from 'vitest';
 import {
   mockParsingOptions,
@@ -30,26 +29,7 @@ describe('po parsing', () => {
     );
 
     expect(parsed).toBeDefined();
-    expect(parsed).toMatchInlineSnapshot(`
-      {
-        "first-entry": {
-          "plurals": {
-            "en_US": {
-              "one": "0 hellos",
-              "other": "1 hello",
-              "two": "2 hellos",
-            },
-          },
-          "translations": {},
-        },
-        "second-entry": {
-          "plurals": {},
-          "translations": {
-            "en_US": "hello",
-          },
-        },
-      }
-    `);
+    expect(parsed).toMatchSnapshot();
   });
 });
 
@@ -79,24 +59,7 @@ describe('po serialization', () => {
       })
     );
 
-    const fileName = 'en_US.po';
-    expect.assert(isNotNil(serialized[fileName]));
-    expect(serialized[fileName].content).toMatchInlineSnapshot(`
-      "msgid ""
-      msgstr ""
-      "Content-Type: text/plain; charset=utf-8\\n"
-      "Content-Transfer-Encoding: 8bit\\n"
-      "Language: en\\n"
-      "Plural-Forms: nplurals=2; plural=(n != 1);\\n"
-
-      msgid "regular"
-      msgstr "hello world!"
-
-      msgid "something-plural"
-      msgid_plural "There are {count} items"
-      msgstr[0] "There is one item"
-      msgstr[1] "There are {count} items"
-      "
-    `);
+    expect(serialized).toHaveLength(1);
+    expect(serialized[0]).toMatchSnapshot();
   });
 });

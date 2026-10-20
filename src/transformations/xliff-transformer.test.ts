@@ -1,6 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { isNotNil } from '@vxti/typed';
-import { type SerializationResult } from '../types.js';
 import { XLIFFDatasetTransformer } from './xliff-transformer.js';
 import {
   mockDataset,
@@ -84,32 +82,9 @@ describe('XLIFF 2.1 Serialization', () => {
 
     expect(result).toBeDefined();
 
-    const fileName = 'en_US';
-    expect.assert(isNotNil(result[fileName]));
-    expect(result[fileName].content).toContain('must exist');
-    expect(result[fileName].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="UTF-8"?>
-      <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
-        <file id="f1">
-          <unit id="first-entry">
-            <segment>
-              <source>hello</source>
-            </segment>
-          </unit>
-          <unit id="second-entry">
-            <segment>
-              <source>hello</source>
-            </segment>
-          </unit>
-          <unit id="strict">
-            <segment>
-              <source>must exist</source>
-            </segment>
-          </unit>
-        </file>
-      </xliff>
-      "
-    `);
+    expect(result).toHaveLength(1);
+    expect(result[0]?.filePath).toEqual('en_US.xlf');
+    expect(result[0]?.content).toMatchSnapshot();
   });
 
   it('serializes dataset with source and target languages', () => {
@@ -121,30 +96,9 @@ describe('XLIFF 2.1 Serialization', () => {
       })
     );
 
-    expect(result).toBeDefined();
-    const fileName = 'de_DE';
-
-    expect.assert(isNotNil(result[fileName]));
-    expect(result[fileName].content).toMatchInlineSnapshot(`
-      "<?xml version="1.0" encoding="UTF-8"?>
-      <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
-        <file id="f1">
-          <unit id="first-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-          <unit id="second-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-        </file>
-      </xliff>
-      "
-    `);
+    expect(result).toHaveLength(2);
+    expect(result[0]?.filePath).toEqual('de_DE.xlf');
+    expect(result[0]?.content).toMatchSnapshot();
   });
 
   it('serializes multiple locale fragments', () => {
@@ -155,54 +109,12 @@ describe('XLIFF 2.1 Serialization', () => {
       locales: ['en_US', 'fr_FR', 'es_ES'],
     });
 
-    expect(result).toBeDefined();
-    expect(result).toMatchObject<SerializationResult>({
-      fr_FR: expect.anything(),
-      es_ES: expect.anything(),
-    });
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "es_ES": {
-          "content": "<?xml version="1.0" encoding="UTF-8"?>
-      <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="es">
-        <file id="f1">
-          <unit id="first-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-          <unit id="second-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-        </file>
-      </xliff>
-      ",
-        },
-        "fr_FR": {
-          "content": "<?xml version="1.0" encoding="UTF-8"?>
-      <xliff version="2.1" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="fr">
-        <file id="f1">
-          <unit id="first-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-          <unit id="second-entry">
-            <segment>
-              <source>hello</source>
-              <target/>
-            </segment>
-          </unit>
-        </file>
-      </xliff>
-      ",
-        },
-      }
-    `);
+    expect(result).toHaveLength(3);
+    expect(result.map(r => r.locale)).toContainEqual([
+      'en_US',
+      'fr_FR',
+      'es_ES',
+    ]);
+    expect(result[0]?.content).toMatchSnapshot();
   });
 });

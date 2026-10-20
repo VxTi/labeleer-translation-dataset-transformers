@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import type { FileExtension } from './transformer.js';
-import type { SerializationFile, SerializationResult } from '../types.js';
 import type { AppleStringsSerializationOptions } from './apple-strings-transformer.js';
 import {
   mockDataset,
@@ -22,17 +21,13 @@ describe('serializer', () => {
         })
       );
 
-      expect(result).toMatchObject<SerializationResult>({
-        'values-en/strings.xml': expect.objectContaining<SerializationFile>({
-          content: expect.any(String),
-        }),
-        'values-nl/strings.xml': expect.objectContaining<SerializationFile>({
-          content: expect.any(String),
-        }),
-        'values-fr/strings.xml': expect.objectContaining<SerializationFile>({
-          content: expect.any(String),
-        }),
-      });
+      expect(result).toHaveLength(3);
+      expect(result.map(s => s.locale)).toContain(['en_US', 'nl_NL', 'fr_FR']);
+      expect(result.map(s => s.filePath)).toContain([
+        'values-en/strings.xml',
+        'values-nl/strings.xml',
+        'values-fr/strings.xml',
+      ]);
     });
   });
 
@@ -46,11 +41,12 @@ describe('serializer', () => {
           keylessTranslation: false,
         })
       );
-      expect(result).toMatchObject<SerializationResult>({
-        'en-US.strings': expect.any(Object),
-        'nl-NL.strings': expect.any(Object),
-        'fr-FR.strings': expect.any(Object),
-      });
+      expect(result).toHaveLength(3);
+      expect(result.map(r => r.filePath)).toContainEqual([
+        'en-US.strings',
+        'nl-NL.strings',
+        'fr-FR.strings',
+      ]);
     });
   });
 
@@ -64,14 +60,8 @@ describe('serializer', () => {
           locales: ['en_US', 'nl_NL', 'fr_FR'],
         })
       );
-      expect(result).toMatchObject<SerializationResult>({
-        'nl_NL.ts': expect.objectContaining<SerializationFile>({
-          content: expect.any(String),
-        }),
-        'fr_FR.ts': expect.objectContaining<SerializationFile>({
-          content: expect.any(String),
-        }),
-      });
+      expect(result).toHaveLength(2);
+      expect(result.map(s => s.locale)).toContain(['en_US', 'fr_FR']);
     });
   });
 

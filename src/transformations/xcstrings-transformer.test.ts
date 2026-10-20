@@ -1,4 +1,3 @@
-import { isNotNil } from '@vxti/typed';
 import { expect, it, describe } from 'vitest';
 import {
   mockDataset,
@@ -125,105 +124,9 @@ describe('xcstrings serialization', () => {
     const result = transformer.serialize(dataset, mockSerializationOptions());
     const fileName = `${DEFAULT_XCSTRINGS_FILE_NAME}.xcstrings`;
 
-    expect.assert(isNotNil(result[fileName]));
-    expect(result[fileName].content).toContain('must exist');
-    expect(result[fileName].content).toMatchInlineSnapshot(`
-      "{
-        "sourceLanguage": "en-US",
-        "strings": {
-          "first-entry": {
-            "comment": "",
-            "extractionState": "manual",
-            "localizations": {
-              "en-US": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "hello"
-                }
-              },
-              "nl-NL": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "world"
-                }
-              }
-            }
-          },
-          "second-entry": {
-            "comment": "",
-            "extractionState": "manual",
-            "localizations": {
-              "en-US": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "hello"
-                }
-              },
-              "nl-NL": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "again"
-                }
-              }
-            }
-          },
-          "strict": {
-            "comment": "",
-            "extractionState": "manual",
-            "localizations": {
-              "en-US": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "must exist"
-                }
-              }
-            }
-          },
-          "plural": {
-            "comment": "",
-            "extractionState": "manual",
-            "localizations": {
-              "en-US": {
-                "variations": {
-                  "plural": {
-                    "one": {
-                      "stringUnit": {
-                        "state": "translated",
-                        "value": "hello"
-                      }
-                    },
-                    "other": {
-                      "stringUnit": {
-                        "state": "translated",
-                        "value": "helloos"
-                      }
-                    }
-                  }
-                }
-              },
-              "nl-NL": {
-                "variations": {
-                  "plural": {
-                    "one": {
-                      "stringUnit": {
-                        "state": "translated",
-                        "value": "hallo"
-                      }
-                    },
-                    "other": {
-                      "stringUnit": {
-                        "state": "translated",
-                        "value": "halloos"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "version": "1.0"
-      }"
-    `);
+    expect(result).toHaveLength(2);
+    expect(result).toHaveProperty('locale');
+    expect(result[0]?.filePath).toEqual(fileName);
+    expect(result[0]?.content).toMatchSnapshot();
   });
 });

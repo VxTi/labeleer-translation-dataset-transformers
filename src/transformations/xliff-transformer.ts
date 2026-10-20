@@ -1,10 +1,10 @@
 import { LocaleDecoder } from '../common/index.js';
 import { DatasetBuilder } from '../dataset-builder.js';
-import {
-  type ParsingOptions,
-  type SerializationFile,
-  type SerializationOptions,
-  type TranslationDataset,
+import type {
+  ParsingOptions,
+  SerializationFile,
+  SerializationOptions,
+  TranslationDataset,
 } from '../types.js';
 import { ParsingError } from '../errors.js';
 import { FileFormat } from './file-formats.js';
@@ -82,7 +82,7 @@ export const XLIFFDatasetTransformer = makeLanguageTransformer({
       return [
         {
           locale: referenceLocale,
-          filePath: filename,
+          filePath: filename + this.extensions[0],
           content,
         },
       ];
@@ -109,7 +109,7 @@ export const XLIFFDatasetTransformer = makeLanguageTransformer({
       );
 
       return {
-        filePath: filename,
+        filePath: filename + this.extensions[0],
         locale,
         content,
       };

@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`serialization > should serialize a Qt dataset even if there is just a single locale 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" sourcelanguage="en_US" language="en_US">
+  <context>
+    <name>Labeleer Translations</name>
+    <message id="first-entry">
+      <source>hello</source>
+    </message>
+    <message id="second-entry">
+      <source>hello</source>
+    </message>
+  </context>
+</TS>
+"
+`;
+
+exports[`serialization > should serialize a simple Qt Linguist XML dataset 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" sourcelanguage="en_US" language="nl_NL">
+  <context>
+    <name>Labeleer Translations</name>
+    <message id="first-entry">
+      <source>hello</source>
+      <translation>world</translation>
+    </message>
+    <message id="second-entry">
+      <source>hello</source>
+      <translation>again</translation>
+    </message>
+  </context>
+</TS>
+"
+`;
+
+exports[`serialization > should serialize a simple Qt Linguist XML dataset 2`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" sourcelanguage="en_US" language="en_AU">
+  <context>
+    <name>Labeleer Translations</name>
+    <message id="first-entry">
+      <source>hello</source>
+      <translation></translation>
+    </message>
+    <message id="second-entry">
+      <source>hello</source>
+      <translation></translation>
+    </message>
+  </context>
+</TS>
+"
+`;
