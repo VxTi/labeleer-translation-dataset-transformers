@@ -9,7 +9,7 @@ import {
 } from '../types.js';
 import type { FileFormat } from './file-formats.js';
 import type { Locale } from '../locales/index.js';
-import { merge } from 'lodash-es';
+import { isNil, merge } from 'lodash-es';
 
 export type FileExtension<T extends string = string> = `.${T}`;
 
@@ -103,6 +103,7 @@ export function makeLanguageTransformer<
       const dataset: TranslationDataset = {};
 
       entries(inputs).forEach(([locale, value]) => {
+        if (isNil(value)) return;
         const parsed = options.parse(value, {
           ...parsingOptions,
           targetLocale: locale,

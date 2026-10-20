@@ -15,7 +15,7 @@ import {
   Plurality,
 } from '../locales/index.js';
 import { makeLanguageTransformer } from './transformer.js';
-import { entries } from '@vxti/typed';
+import { isNil, entries } from '@vxti/typed';
 import { extractArray } from '../util/data-extraction.js';
 import { XMLParser } from 'fast-xml-parser';
 import Builder, { type XMLBuilder } from 'fast-xml-builder';
@@ -48,14 +48,15 @@ export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
   ): TranslationDataset {
     const builder = new DatasetBuilder();
 
-    for (const [referenceLocale, content] of entries(inputs)) {
+    entries(inputs).forEach(([referenceLocale, content]) => {
+      if (isNil(content)) return;
       const dataset = this.parse(content, {
         ...options,
         referenceLocale,
       });
 
       builder.merge(dataset);
-    }
+    });
 
     return builder.build();
   },
@@ -74,6 +75,11 @@ export const AndroidStringsDatasetTransformer = makeLanguageTransformer({
       });
 
       return entries(perLanguageDatasets).map(([locale, dataset]) => {
+        if (isNil(dataset)) {
+          throw new SerializationError(
+            `Dataset for locale ${locale} is undefined`
+          );
+        }
         const content = buildXmlDataset(builder, dataset, locale);
         const dirname = androidValuesDirectory(locale, options.locales);
         const filename = [dirname, 'strings'].join('/');
@@ -131,6 +137,7 @@ function buildXmlDataset(
     const plurals = entry.plurals?.[locale] ?? {};
 
     entries(plurals).forEach(([plurality, value]) => {
+      if (isNil(value)) return;
       pluralItems.push({
         '@_quantity': plurality,
         '#text': escapeAndroidText(value),

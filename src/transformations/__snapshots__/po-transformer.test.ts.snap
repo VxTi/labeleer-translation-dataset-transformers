@@ -2,6 +2,14 @@
 
 exports[`po parsing > should parse PO files correctly 1`] = `
 {
+  "": {
+    "plurals": {},
+    "translations": {
+      "en_US": "Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+",
+    },
+  },
   "first-entry": {
     "plurals": {
       "en_US": {

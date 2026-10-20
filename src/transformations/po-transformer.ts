@@ -1,4 +1,5 @@
 import { hasArrayLengthAtLeast, isNonEmptyString, entries } from '@vxti/typed';
+import { isNil } from 'lodash-es';
 import { DatasetBuilder } from '../dataset-builder.js';
 import {
   type ParsingOptions,
@@ -36,23 +37,23 @@ export const PODatasetTransformer = makeLanguageTransformer({
       const builder = new DatasetBuilder();
 
       Object.values(output.translations).forEach(context => {
-        entries<string, GetTextTranslation>(context).forEach(([key, entry]) => {
-          if (!key) return; // skip empty header
+        entries<Record<string, GetTextTranslation>>(context).forEach(
+          ([key, entry]) => {
+            const plurals = extractPlurals(targetLocale, entry);
 
-          const plurals = extractPlurals(targetLocale, entry);
+            if (plurals) {
+              builder.addPluralEntry(key, plurals);
+            } else {
+              builder.addTranslation(key, {
+                [targetLocale]: entry.msgstr[0] ?? '',
+              });
+            }
 
-          if (plurals) {
-            builder.addPluralEntry(key, plurals);
-          } else {
-            builder.addTranslation(key, {
-              [targetLocale]: entry.msgstr[0] || '',
-            });
+            builder
+              .addDescription(key, entry.comments?.extracted)
+              .addTags(key, entry.comments?.reference?.split('\n'));
           }
-
-          builder
-            .addDescription(key, entry.comments?.extracted)
-            .addTags(key, entry.comments?.reference?.split('\n'));
-        });
+        );
       });
 
       return builder.build();
@@ -73,14 +74,16 @@ export const PODatasetTransformer = makeLanguageTransformer({
   ): TranslationDataset {
     const builder = new DatasetBuilder();
 
-    for (const [locale, content] of entries(inputs)) {
+    entries(inputs).forEach(([locale, content]) => {
+      if (isNil(content)) return;
+
       const dataset = this.parse(content, {
         ...options,
         targetLocale: locale,
       });
 
       builder.merge(dataset);
-    }
+    });
 
     return builder.build();
   },

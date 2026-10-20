@@ -1,4 +1,5 @@
 import { hasArrayLengthAtLeast, entries } from '@vxti/typed';
+import { isNil } from 'lodash-es';
 import { DatasetBuilder } from '../dataset-builder.js';
 import {
   type ParsingOptions,
@@ -56,14 +57,15 @@ export const AppleStringsDatasetTransformer = makeLanguageTransformer({
   ): TranslationDataset {
     const builder = new DatasetBuilder();
 
-    for (const [targetLocale, content] of entries(inputs)) {
+    entries(inputs).forEach(([targetLocale, content]) => {
+      if (isNil(content)) return;
       const dataset = this.parse(content, {
         ...options,
         targetLocale,
       });
 
       builder.merge(dataset);
-    }
+    });
 
     return builder.build();
   },
